@@ -19,8 +19,8 @@ public interface ModbusDelegate {
   boolean[] queueReadCoilsRequest(@RequestParam(value = "server_address") int serverAddress,
       @RequestParam(value = "start_address") int startAddress, @RequestParam(value = "quantity") int quantity);
 
-  @PostMapping("/write_coil")
-  public boolean queueWriteCoilRequest(@RequestParam(value = "server_address") int serverAddress,
-      @RequestParam(value = "device_number") int deviceNumber, @RequestParam(value = "status") boolean status);
+  @PostMapping("/flip_coil")
+  public boolean queueFlipCoilRequest(@RequestParam(value = "server_address") int serverAddress,
+      @RequestParam(value = "device_number") int deviceNumber);
 
 }

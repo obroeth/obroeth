@@ -4,14 +4,21 @@
 
 package de.roeth.service.modbus;
 
+import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
+import com.intelligt.modbus.jlibmodbus.exception.ModbusNumberException;
+import com.intelligt.modbus.jlibmodbus.exception.ModbusProtocolException;
+import de.roeth.service.modbus.device.Device;
+import de.roeth.service.modbus.device.StatusKeeper;
+import de.roeth.service.modbus.request.FlipCoilRequest;
 import de.roeth.service.modbus.request.ReadCoilsRequest;
 import de.roeth.service.modbus.request.ReadDiscreteInputRequest;
 import de.roeth.service.modbus.request.Request;
-import de.roeth.service.modbus.request.WriteRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,10 +37,30 @@ public class ModbusLoop {
 
   private final List<Request> requests = Collections.synchronizedList(new ArrayList<>());
   private final List<UUID> doneRequestIds = Collections.synchronizedList(new ArrayList<>());
+  private final StatusKeeper keeper = new StatusKeeper();
   @Autowired
   public ModbusProperties properties;
+  private Modbus modbus;
 
-  private int counter = 0;
+  @PostConstruct
+  public void init() {
+    log.info("Initializing Modbus interface");
+    modbus = new Modbus(properties);
+    log.info("Initializing Status Keeper");
+    try {
+      for (int i = 1; i <= properties.getNumberOfSlaves(); i++) {
+        ReadCoilsRequest request = new ReadCoilsRequest(i, 0, 8);
+        processReadCoilsRequest(request);
+        boolean[] coils = request.getResponse();
+        log.info("Slave " + i + ": " + Arrays.toString(coils));
+        for (int j = 0; j < coils.length; j++) {
+          keeper.addDevice(new Device(i, j), coils[j]);
+        }
+      }
+    } catch (ModbusNumberException | ModbusProtocolException | ModbusIOException e) {
+      log.error("Failed to initialize Status Keeper!", e);
+    }
+  }
 
   @Scheduled(fixedDelay = 1)
   public void loop() {
@@ -48,24 +75,44 @@ public class ModbusLoop {
   }
 
   private void processRequest(Request request) {
-    if (request instanceof ReadDiscreteInputRequest) {
-      ReadDiscreteInputRequest readDiscreteInputRequest = (ReadDiscreteInputRequest) request;
-      if ((counter >= 3 && counter < 5) || (counter > 10 && counter < 14)) {
-        boolean[] ans = new boolean[8];
-        ans[0] = true;
-        readDiscreteInputRequest.setResponse(ans);
-      } else {
-        readDiscreteInputRequest.setResponse(new boolean[8]);
+    try {
+      if (request instanceof ReadDiscreteInputRequest) {
+        ReadDiscreteInputRequest readDiscreteInputRequest = (ReadDiscreteInputRequest) request;
+        processReadDiscreteInputRequest(readDiscreteInputRequest);
+      } else if (request instanceof ReadCoilsRequest) {
+        ReadCoilsRequest readCoilsRequest = (ReadCoilsRequest) request;
+        processReadCoilsRequest(readCoilsRequest);
+      } else if (request instanceof FlipCoilRequest) {
+        FlipCoilRequest flipCoilRequest = (FlipCoilRequest) request;
+        processFlipCoilRequest(flipCoilRequest);
       }
-      counter++;
-    } else if (request instanceof ReadCoilsRequest) {
-      ReadCoilsRequest readCoilsRequest = (ReadCoilsRequest) request;
-      readCoilsRequest.setResponse(new boolean[8]);
-    } else if (request instanceof WriteRequest) {
-      WriteRequest writeRequest = (WriteRequest) request;
-      log.info("Answered write!");
+    } catch (ModbusNumberException | ModbusProtocolException | ModbusIOException e) {
+      log.error("Failed to perform request!", e);
     }
     doneRequestIds.add(request.getUuid());
+  }
+
+  private void processFlipCoilRequest(FlipCoilRequest request)
+      throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
+    Device device = new Device(request.getServerAddress(), request.getStartAddress());
+    boolean newStatus = keeper.flipStatus(device);
+    modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), newStatus);
+    log.info(device + " has new status: " + newStatus);
+    log.info("Keeper: " + keeper);
+  }
+
+  private void processReadCoilsRequest(ReadCoilsRequest request)
+      throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
+    boolean[] coils =
+        modbus.getMaster().readCoils(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
+    request.setResponse(coils);
+  }
+
+  private void processReadDiscreteInputRequest(ReadDiscreteInputRequest request)
+      throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
+    boolean[] coils = modbus.getMaster()
+        .readDiscreteInputs(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
+    request.setResponse(coils);
   }
 
   @GetMapping("/actuator/health")
@@ -95,10 +142,10 @@ public class ModbusLoop {
     return request.getResponse();
   }
 
-  @PostMapping("/write_coil")
-  public boolean queueWriteCoilRequest(@RequestParam(value = "server_address") int serverAddress,
-      @RequestParam(value = "device_number") int deviceNumber, @RequestParam(value = "status") boolean status) {
-    WriteRequest request = new WriteRequest(serverAddress, deviceNumber, status);
+  @PostMapping("/flip_coil")
+  public boolean queueFlipCoilRequest(@RequestParam(value = "server_address") int serverAddress,
+      @RequestParam(value = "device_number") int deviceNumber) {
+    FlipCoilRequest request = new FlipCoilRequest(serverAddress, deviceNumber);
     requests.add(request);
     while (!doneRequestIds.contains(request.getUuid())) {
     }

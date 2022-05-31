@@ -21,7 +21,7 @@ public class GatewayApplication {
   public RouteLocator myRoutes(RouteLocatorBuilder builder) {
     return builder.routes().route(p -> p.path("/read_coils").uri("lb://modbus/read_coils"))
         .route(p -> p.path("/read_discrete_input").uri("lb://modbus/read_discrete_input"))
-        .route(p -> p.path("/write_coil").uri("lb://modbus/write_coil")).build();
+        .route(p -> p.path("/flip_coil").uri("lb://modbus/flip_coil")).build();
   }
 
 }

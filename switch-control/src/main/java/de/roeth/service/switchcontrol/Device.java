@@ -1,6 +1,7 @@
 /*
  * ARELAS Copyright
  */
+
 package de.roeth.service.switchcontrol;
 
 import java.util.Objects;

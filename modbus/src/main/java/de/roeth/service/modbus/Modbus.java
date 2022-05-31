@@ -26,7 +26,7 @@ public class Modbus {
   @Getter
   private ModbusMaster master;
 
-  private Modbus(ModbusProperties properties) {
+  public Modbus(ModbusProperties properties) {
     this.properties = properties;
     slaves = new ArrayList<>();
     try {

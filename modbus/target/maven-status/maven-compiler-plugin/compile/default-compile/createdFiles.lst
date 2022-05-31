@@ -1,9 +1,12 @@
+de\roeth\service\modbus\ModbusLoop.class
+de\roeth\service\modbus\request\FlipCoilRequest.class
+de\roeth\service\modbus\request\ReadDiscreteInputRequest.class
+de\roeth\service\modbus\Modbus.class
+de\roeth\service\modbus\device\Device.class
+de\roeth\service\modbus\request\ReadCoilsRequest.class
+de\roeth\service\modbus\device\StatusKeeper.class
 de\roeth\service\modbus\ModbusApplication.class
 de\roeth\service\modbus\ModbusProperties.class
-de\roeth\service\modbus\ModbusLoop.class
-de\roeth\service\modbus\request\ReadDiscreteInputRequest.class
 de\roeth\service\modbus\request\WriteRequest.class
 de\roeth\service\modbus\ModbusException.class
-de\roeth\service\modbus\Modbus.class
 de\roeth\service\modbus\request\Request.class
-de\roeth\service\modbus\request\ReadCoilsRequest.class
