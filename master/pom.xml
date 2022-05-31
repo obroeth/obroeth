@@ -16,6 +16,9 @@
   <name>master</name>
   <modules>
     <module>../env</module>
+    <module>../gateway</module>
+    <module>../modbus</module>
+    <module>../switch-control</module>
   </modules>
 
 </project>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.8">
+<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\switch-control\src\main\java\de\roeth\service\switchcontrol\Device.java">
+<error line="4" severity="warning" message="&apos;package&apos; sollte von der vorherigen Anweisung durch eine leere Zeile getrennt werden." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+<error line="17" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\switch-control\src\main\java\de\roeth\service\switchcontrol\StatusKeeper.java">
+<error line="4" severity="warning" message="&apos;package&apos; sollte von der vorherigen Anweisung durch eine leere Zeile getrennt werden." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+</file>
+<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\switch-control\src\main\java\de\roeth\service\switchcontrol\SwitchControlLoop.java">
+<error line="29" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="41" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+</checkstyle>

@@ -1,0 +1,21 @@
+server:
+  port: 0
+spring:
+  application:
+    name: modbus
+  config:
+    import: "consul:"
+  cloud:
+    consul:
+      host: 192.168.178.100
+      #host: localhost #host: 192.168.178.100
+      port: 8500
+      discovery:
+        healthCheckPath: /actuator/health
+reactive:
+  feign:
+    client:
+      config:
+        gameloop:
+          connectTimeout: 6000000
+          readTimeout: 1000000

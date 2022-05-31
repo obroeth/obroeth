@@ -65,7 +65,7 @@
     <org.springframework.verion>2.5.5</org.springframework.verion>
     <de.arelas.common.version>0.1.0-alpha</de.arelas.common.version>
     <de.arelas.env.version>0.1.0-alpha</de.arelas.env.version>
-    <org.slf4j.version>1.6.1</org.slf4j.version>
+    <org.slf4j.version>1.7.26</org.slf4j.version>
     <org.log4j.verion>1.2.16</org.log4j.verion>
     <org.w3c.dom.version>2.3.0-jaxb-1.0.6</org.w3c.dom.version>
     <spring-cloud.version>2020.0.4</spring-cloud.version>
@@ -95,6 +95,11 @@
         <version>${com.fasterxml.jackson.core.version}</version>
       </dependency>
       <dependency>
+        <groupId>com.intelligt.modbus</groupId>
+        <artifactId>jlibmodbus</artifactId>
+        <version>1.2.9.4</version>
+      </dependency>
+      <dependency>
         <groupId>com.orientechnologies</groupId>
         <artifactId>orientdb-client</artifactId>
         <version>${com.orientechnologies.orientdb-client.version}</version>
@@ -116,8 +121,8 @@
       </dependency>
       <dependency>
         <groupId>de.roeth.service</groupId>
-        <artifactId>consul-delegates</artifactId>
-        <version>${de.arelas.common.version}</version>
+        <artifactId>sm-delegates</artifactId>
+        <version>0.1.0-alpha</version>
       </dependency>
       <dependency>
         <groupId>de.topobyte</groupId>
@@ -163,6 +168,11 @@
         <groupId>org.noggit</groupId>
         <artifactId>noggit</artifactId>
         <version>${org.noggit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${org.slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
