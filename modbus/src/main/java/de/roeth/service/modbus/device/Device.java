@@ -1,18 +1,21 @@
 /*
  * ARELAS Copyright
  */
+
 package de.roeth.service.modbus.device;
 
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Getter
+@NoArgsConstructor
 public class Device {
 
-  private final int serverAddress;
-  private final int deviceNumber;
+  private int serverAddress;
+  private int deviceNumber;
 
   public Device(String code) {
     String[] split = code.split(",");

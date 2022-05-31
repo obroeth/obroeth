@@ -4,10 +4,13 @@
 
 package de.roeth.service.modbus;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusNumberException;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusProtocolException;
 import de.roeth.service.modbus.device.Device;
+import de.roeth.service.modbus.device.DeviceMapper;
 import de.roeth.service.modbus.device.StatusKeeper;
 import de.roeth.service.modbus.request.FlipCoilRequest;
 import de.roeth.service.modbus.request.ReadCoilsRequest;
@@ -41,11 +44,18 @@ public class ModbusLoop {
   @Autowired
   public ModbusProperties properties;
   private Modbus modbus;
+  private DeviceMapper deviceMapper;
 
   @PostConstruct
   public void init() {
     log.info("Initializing Modbus interface");
     modbus = new Modbus(properties);
+    log.info("Initializing Device Mapper");
+    try {
+      deviceMapper = new ObjectMapper().readValue(properties.getDevices(), DeviceMapper.class);
+    } catch (JsonProcessingException e) {
+      log.error("Failed to initialize Device Mapper!", e);
+    }
     log.info("Initializing Status Keeper");
     try {
       for (int i = 1; i <= properties.getNumberOfSlaves(); i++) {
@@ -151,5 +161,19 @@ public class ModbusLoop {
     }
     doneRequestIds.remove(request.getUuid());
     return true;
+  }
+
+  @PostMapping("/flip_named_coil")
+  public boolean queueFlipCoilRequest(@RequestParam(value = "name") String name) {
+    Device device = deviceMapper.getDevice(name);
+    if (device != null) {
+      FlipCoilRequest request = new FlipCoilRequest(device.getServerAddress(), device.getDeviceNumber());
+      requests.add(request);
+      while (!doneRequestIds.contains(request.getUuid())) {
+      }
+      doneRequestIds.remove(request.getUuid());
+      return true;
+    }
+    return false;
   }
 }
