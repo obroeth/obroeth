@@ -17,8 +17,8 @@ public class ModbusProperties {
   @Value("${modbus.config.numberSlaves}")
   private int numberOfSlaves;
 
-  //  @Getter
-  //  @Value("${modbus.config.devices}")
-  //  private String devices;
+  @Getter
+  @Value("${modbus.config.devices}")
+  private String devices;
 
 }
