@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="8.8">
 <file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\device\Device.java">
+<error line="20" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\device\DeviceMapper.java">
 <error line="4" severity="warning" message="&apos;package&apos; sollte von der vorherigen Anweisung durch eine leere Zeile getrennt werden." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
-<error line="17" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="24" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+</file>
+<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\Modbus.java">
+<error line="29" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
 </file>
 <file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\ModbusLoop.java">
-<error line="43" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
-<error line="55" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
-<error line="96" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
-<error line="107" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
-<error line="118" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="47" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="73" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="135" severity="warning" message="Zeile ist 121 Zeichen lang (Obergrenze ist 120)." source="com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck"/>
+<error line="155" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="166" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="177" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="188" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="199" severity="warning" message="Die Definition der überladene Methoden steht nicht bei der vorherigen Definition in Zeile &apos;177&apos;." source="com.puppycrawl.tools.checkstyle.checks.coding.OverloadMethodsDeclarationOrderCheck"/>
+<error line="199" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
 </file>
 <file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\ReadCoilsRequest.java">
 <error line="4" severity="warning" message="&apos;package&apos; sollte von der vorherigen Anweisung durch eine leere Zeile getrennt werden." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
@@ -20,7 +30,8 @@
 <file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\Request.java">
 <error line="21" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
 </file>
-<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\WriteRequest.java">
+<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\TimeRequest.java">
 <error line="4" severity="warning" message="&apos;package&apos; sollte von der vorherigen Anweisung durch eine leere Zeile getrennt werden." source="com.puppycrawl.tools.checkstyle.checks.whitespace.EmptyLineSeparatorCheck"/>
+<error line="18" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
 </file>
 </checkstyle>

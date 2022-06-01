@@ -4,18 +4,16 @@
 
 package de.roeth.service.modbus;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusNumberException;
 import com.intelligt.modbus.jlibmodbus.exception.ModbusProtocolException;
 import de.roeth.service.modbus.device.Device;
-import de.roeth.service.modbus.device.DeviceMapper;
 import de.roeth.service.modbus.device.StatusKeeper;
 import de.roeth.service.modbus.request.FlipCoilRequest;
 import de.roeth.service.modbus.request.ReadCoilsRequest;
 import de.roeth.service.modbus.request.ReadDiscreteInputRequest;
 import de.roeth.service.modbus.request.Request;
+import de.roeth.service.modbus.request.TimeRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,19 +41,19 @@ public class ModbusLoop {
   private final StatusKeeper keeper = new StatusKeeper();
   @Autowired
   public ModbusProperties properties;
-  private Modbus modbus;
-  private DeviceMapper deviceMapper;
+  //  private Modbus modbus;
+  //  private DeviceMapper deviceMapper;
 
   @PostConstruct
   public void init() {
     log.info("Initializing Modbus interface");
-    modbus = new Modbus(properties);
+    //    modbus = new Modbus(properties);
     log.info("Initializing Device Mapper");
-    try {
-      deviceMapper = new ObjectMapper().readValue(properties.getDevices(), DeviceMapper.class);
-    } catch (JsonProcessingException e) {
-      log.error("Failed to initialize Device Mapper!", e);
-    }
+    //    try {
+    //      deviceMapper = new ObjectMapper().readValue(properties.getDevices(), DeviceMapper.class);
+    //    } catch (JsonProcessingException e) {
+    //      log.error("Failed to initialize Device Mapper!", e);
+    //    }
     log.info("Initializing Status Keeper");
     try {
       for (int i = 1; i <= properties.getNumberOfSlaves(); i++) {
@@ -78,7 +76,9 @@ public class ModbusLoop {
       List<Request> doneRequests = new ArrayList<>();
       requests.forEach(request -> {
         processRequest(request);
-        doneRequests.add(request);
+        if (doneRequestIds.contains(request.getUuid())) {
+          doneRequests.add(request);
+        }
       });
       doneRequests.forEach(requests::remove);
     }
@@ -95,34 +95,56 @@ public class ModbusLoop {
       } else if (request instanceof FlipCoilRequest) {
         FlipCoilRequest flipCoilRequest = (FlipCoilRequest) request;
         processFlipCoilRequest(flipCoilRequest);
+      } else if (request instanceof TimeRequest) {
+        TimeRequest timeRequest = (TimeRequest) request;
+        processTimeRequest(timeRequest);
       }
     } catch (ModbusNumberException | ModbusProtocolException | ModbusIOException e) {
       log.error("Failed to perform request!", e);
     }
-    doneRequestIds.add(request.getUuid());
+  }
+
+  private void processTimeRequest(TimeRequest request) {
+    Device device = new Device(request.getServerAddress(), request.getStartAddress());
+    if (!request.isStarted()) {
+      request.start();
+      keeper.setStatus(device, true);
+      log.info("Started time request for device: " + device);
+    } else {
+      request.update();
+    }
+    if (request.isDone()) {
+      log.info("Finalized time request for device: " + device);
+      doneRequestIds.add(request.getUuid());
+    }
   }
 
   private void processFlipCoilRequest(FlipCoilRequest request)
       throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
     Device device = new Device(request.getServerAddress(), request.getStartAddress());
     boolean newStatus = keeper.flipStatus(device);
-    modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), newStatus);
+    //    modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), newStatus);
     log.info(device + " has new status: " + newStatus);
     log.info("Keeper: " + keeper);
+    doneRequestIds.add(request.getUuid());
   }
 
   private void processReadCoilsRequest(ReadCoilsRequest request)
       throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
-    boolean[] coils =
-        modbus.getMaster().readCoils(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
+    //    boolean[] coils =
+    //        modbus.getMaster().readCoils(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
+    boolean[] coils = new boolean[8];
     request.setResponse(coils);
+    doneRequestIds.add(request.getUuid());
   }
 
   private void processReadDiscreteInputRequest(ReadDiscreteInputRequest request)
       throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
-    boolean[] coils = modbus.getMaster()
-        .readDiscreteInputs(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
+    //    boolean[] coils = modbus.getMaster()
+    //        .readDiscreteInputs(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
+    boolean[] coils = new boolean[8];
     request.setResponse(coils);
+    doneRequestIds.add(request.getUuid());
   }
 
   @GetMapping("/actuator/health")
@@ -163,17 +185,28 @@ public class ModbusLoop {
     return true;
   }
 
+  @PostMapping("/write_time_coil")
+  public boolean queueWriteTimeCoilRequest(@RequestParam(value = "server_address") int serverAddress,
+      @RequestParam(value = "device_number") int deviceNumber, @RequestParam(value = "duration") long duration) {
+    TimeRequest request = new TimeRequest(serverAddress, deviceNumber, duration);
+    requests.add(request);
+    while (!doneRequestIds.contains(request.getUuid())) {
+    }
+    doneRequestIds.remove(request.getUuid());
+    return true;
+  }
+
   @PostMapping("/flip_named_coil")
   public boolean queueFlipCoilRequest(@RequestParam(value = "name") String name) {
-    Device device = deviceMapper.getDevice(name);
-    if (device != null) {
-      FlipCoilRequest request = new FlipCoilRequest(device.getServerAddress(), device.getDeviceNumber());
-      requests.add(request);
-      while (!doneRequestIds.contains(request.getUuid())) {
-      }
-      doneRequestIds.remove(request.getUuid());
-      return true;
-    }
+    //    Device device = deviceMapper.getDevice(name);
+    //    if (device != null) {
+    //      FlipCoilRequest request = new FlipCoilRequest(device.getServerAddress(), device.getDeviceNumber());
+    //      requests.add(request);
+    //      while (!doneRequestIds.contains(request.getUuid())) {
+    //      }
+    //      doneRequestIds.remove(request.getUuid());
+    //      return true;
+    //    }
     return false;
   }
 }

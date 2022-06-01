@@ -20,6 +20,10 @@ public class StatusKeeper {
     return control.get(device);
   }
 
+  public void setStatus(Device device, boolean status) {
+    control.put(device, status);
+  }
+
   //  public void flipStatus(Device device) {
   //    control.put(device, !control.get(device));
   //    WebClient client = WebClient.builder().baseUrl("http://localhost:8080/write_coil")

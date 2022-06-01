@@ -1,3 +1,6 @@
+/*
+ * ARELAS Copyright
+ */
 package de.roeth.service.modbus.device;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

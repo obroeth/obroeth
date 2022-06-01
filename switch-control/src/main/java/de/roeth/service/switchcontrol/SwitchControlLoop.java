@@ -23,7 +23,7 @@ public class SwitchControlLoop {
   @Autowired
   SwitchControlProperties properties;
 
-  @Scheduled(fixedDelay = 2000)
+  @Scheduled(fixedDelay = 1)
   public void loop() {
     for (int i = 1; i <= properties.getNumberOfSlaves(); i++) {
       boolean[] coils = modbusDelegate.queueReadDiscreteInputRequest(i, 0, 8);
