@@ -25,17 +25,25 @@ public class SwitchControlLoop {
 
   @Scheduled(fixedDelay = 1)
   public void loop() {
-    for (int i = 1; i <= properties.getNumberOfSlaves(); i++) {
-      boolean[] coils = modbusDelegate.queueReadDiscreteInputRequest(i, 0, 8);
-      for (int j = 0; j < coils.length; j++) {
-        Device device = new Device(i, j);
-        if (coils[j] && !pressed.contains(device)) {
-          modbusDelegate.queueFlipCoilRequest(device.getServerAddress(), device.getDeviceNumber());
-          pressed.add(device);
-        } else if (!coils[j]) {
-          pressed.remove(device);
+    try {
+      for (int i = 1; i <= properties.getNumberOfSlaves(); i++) {
+        boolean[] coils = modbusDelegate.queueReadDiscreteInputRequest(i, 0, 8);
+        if (coils != null) {
+          for (int j = 0; j < coils.length; j++) {
+            Device device = new Device(i, j);
+            if (coils[j] && !pressed.contains(device)) {
+              modbusDelegate.queueFlipCoilRequest(device.getServerAddress(), device.getDeviceNumber());
+              pressed.add(device);
+            } else if (!coils[j]) {
+              pressed.remove(device);
+            }
+          }
+        } else {
+          log.error("Read discrete input return null!");
         }
       }
+    } catch (Exception e) {
+      log.error("Unknown error in switch control loop!", e);
     }
   }
 

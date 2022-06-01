@@ -82,22 +82,30 @@ public class ModbusLoop {
 
   @Scheduled(fixedDelay = 1)
   public void loop() {
-    if (!requests.isEmpty() || !timeRequests.isEmpty()) {
-      List<Request> doneRequests = new ArrayList<>();
-      requests.forEach(request -> {
-        processRequest(request);
-        if (doneRequestIds.contains(request.getUuid())) {
-          doneRequests.add(request);
-        }
-      });
-      timeRequests.forEach(request -> {
-        processRequest(request);
-        if (doneRequestIds.contains(request.getUuid())) {
-          doneRequests.add(request);
-        }
-      });
-      doneRequests.forEach(requests::remove);
-      doneRequests.forEach(timeRequests::remove);
+    //    if(modbus == null) {
+    //      log.error("Modbus not initialized!");
+    //      return;
+    //    }
+    try {
+      if (!requests.isEmpty() || !timeRequests.isEmpty()) {
+        List<Request> doneRequests = new ArrayList<>();
+        requests.forEach(request -> {
+          processRequest(request);
+          if (doneRequestIds.contains(request.getUuid())) {
+            doneRequests.add(request);
+          }
+        });
+        timeRequests.forEach(request -> {
+          processRequest(request);
+          if (doneRequestIds.contains(request.getUuid())) {
+            doneRequests.add(request);
+          }
+        });
+        doneRequests.forEach(requests::remove);
+        doneRequests.forEach(timeRequests::remove);
+      }
+    } catch (Exception e) {
+      log.error("Unknown error in modbus loop!", e);
     }
   }
 
