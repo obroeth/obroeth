@@ -24,6 +24,8 @@ public class GatewayApplication {
         .route(p -> p.path("/flip_named_coil").uri("lb://modbus/flip_named_coil"))
         .route(p -> p.path("/write_time_coil").uri("lb://modbus/write_time_coil"))
         .route(p -> p.path("/interrupt_time_coil").uri("lb://modbus/interrupt_time_coil"))
+        .route(p -> p.path("/write_time_named_coil").uri("lb://modbus/write_time_named_coil"))
+        .route(p -> p.path("/interrupt_time_named_coil").uri("lb://modbus/interrupt_time_named_coil"))
         .route(p -> p.path("/flip_coil").uri("lb://modbus/flip_coil")).build();
   }
 

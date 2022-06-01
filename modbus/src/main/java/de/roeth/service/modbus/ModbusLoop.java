@@ -257,4 +257,33 @@ public class ModbusLoop {
     }
     return false;
   }
+
+  @PostMapping("/write_time_named_coil")
+  public boolean queueWriteTimeNamedCoilRequest(@RequestParam(value = "name") String name,
+      @RequestParam(value = "duration") long duration) {
+    Device device = deviceMapper.getDevice(name);
+    if (device != null) {
+      TimeRequest request = new TimeRequest(device.getServerAddress(), device.getDeviceNumber(), duration);
+      timeRequests.add(request);
+      while (!doneRequestIds.contains(request.getUuid())) {
+      }
+      doneRequestIds.remove(request.getUuid());
+      return true;
+    }
+    return false;
+  }
+
+  @PostMapping("/interrupt_time_named_coil")
+  public boolean queueInterruptTimeNamedCoilRequest(@RequestParam(value = "name") String name) {
+    Device device = deviceMapper.getDevice(name);
+    if (device != null) {
+      InterruptTimeRequest request = new InterruptTimeRequest(device.getServerAddress(), device.getDeviceNumber());
+      timeRequests.add(request);
+      while (!doneRequestIds.contains(request.getUuid())) {
+      }
+      doneRequestIds.remove(request.getUuid());
+      return true;
+    }
+    return false;
+  }
 }
