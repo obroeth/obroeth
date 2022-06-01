@@ -12,3 +12,4 @@ de\roeth\service\modbus\device\DeviceMapper$DeviceMapperBuilder.class
 de\roeth\service\modbus\ModbusException.class
 de\roeth\service\modbus\request\Request.class
 de\roeth\service\modbus\request\TimeRequest.class
+de\roeth\service\modbus\request\InterruptTimeRequest.class

@@ -10,4 +10,5 @@ C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java
 C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\ReadDiscreteInputRequest.java
 C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\FlipCoilRequest.java
 C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\ModbusLoop.java
+C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\InterruptTimeRequest.java
 C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\modbus\src\main\java\de\roeth\service\modbus\request\TimeRequest.java

@@ -10,6 +10,7 @@ import com.intelligt.modbus.jlibmodbus.exception.ModbusProtocolException;
 import de.roeth.service.modbus.device.Device;
 import de.roeth.service.modbus.device.StatusKeeper;
 import de.roeth.service.modbus.request.FlipCoilRequest;
+import de.roeth.service.modbus.request.InterruptTimeRequest;
 import de.roeth.service.modbus.request.ReadCoilsRequest;
 import de.roeth.service.modbus.request.ReadDiscreteInputRequest;
 import de.roeth.service.modbus.request.Request;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ModbusLoop {
 
   private final List<Request> requests = Collections.synchronizedList(new ArrayList<>());
+  private final List<Request> timeRequests = Collections.synchronizedList(new ArrayList<>());
   private final List<UUID> doneRequestIds = Collections.synchronizedList(new ArrayList<>());
   private final StatusKeeper keeper = new StatusKeeper();
   @Autowired
@@ -72,7 +74,7 @@ public class ModbusLoop {
 
   @Scheduled(fixedDelay = 1)
   public void loop() {
-    if (!requests.isEmpty()) {
+    if (!requests.isEmpty() || !timeRequests.isEmpty()) {
       List<Request> doneRequests = new ArrayList<>();
       requests.forEach(request -> {
         processRequest(request);
@@ -80,7 +82,14 @@ public class ModbusLoop {
           doneRequests.add(request);
         }
       });
+      timeRequests.forEach(request -> {
+        processRequest(request);
+        if (doneRequestIds.contains(request.getUuid())) {
+          doneRequests.add(request);
+        }
+      });
       doneRequests.forEach(requests::remove);
+      doneRequests.forEach(timeRequests::remove);
     }
   }
 
@@ -98,10 +107,27 @@ public class ModbusLoop {
       } else if (request instanceof TimeRequest) {
         TimeRequest timeRequest = (TimeRequest) request;
         processTimeRequest(timeRequest);
+      } else if (request instanceof InterruptTimeRequest) {
+        InterruptTimeRequest interruptTimeRequest = (InterruptTimeRequest) request;
+        processInterruptTimeRequest(interruptTimeRequest);
       }
     } catch (ModbusNumberException | ModbusProtocolException | ModbusIOException e) {
       log.error("Failed to perform request!", e);
     }
+  }
+
+  private void processInterruptTimeRequest(InterruptTimeRequest request) {
+    Device device = new Device(request.getServerAddress(), request.getStartAddress());
+    for (Request req : timeRequests) {
+      if (req instanceof TimeRequest) {
+        Device other = new Device(req.getServerAddress(), req.getStartAddress());
+        if (device.equals(other)) {
+          ((TimeRequest) req).interrupt();
+          log.info("Interrupt time event on device: " + device);
+        }
+      }
+    }
+    doneRequestIds.add(request.getUuid());
   }
 
   private void processTimeRequest(TimeRequest request) {
@@ -109,11 +135,14 @@ public class ModbusLoop {
     if (!request.isStarted()) {
       request.start();
       keeper.setStatus(device, true);
+      //      modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), true);
       log.info("Started time request for device: " + device);
     } else {
       request.update();
     }
     if (request.isDone()) {
+      keeper.setStatus(device, false);
+      //      modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), false);
       log.info("Finalized time request for device: " + device);
       doneRequestIds.add(request.getUuid());
     }
@@ -189,7 +218,18 @@ public class ModbusLoop {
   public boolean queueWriteTimeCoilRequest(@RequestParam(value = "server_address") int serverAddress,
       @RequestParam(value = "device_number") int deviceNumber, @RequestParam(value = "duration") long duration) {
     TimeRequest request = new TimeRequest(serverAddress, deviceNumber, duration);
-    requests.add(request);
+    timeRequests.add(request);
+    while (!doneRequestIds.contains(request.getUuid())) {
+    }
+    doneRequestIds.remove(request.getUuid());
+    return true;
+  }
+
+  @PostMapping("/interrupt_time_coil")
+  public boolean queueInterruptTimeCoilRequest(@RequestParam(value = "server_address") int serverAddress,
+      @RequestParam(value = "device_number") int deviceNumber) {
+    InterruptTimeRequest request = new InterruptTimeRequest(serverAddress, deviceNumber);
+    timeRequests.add(request);
     while (!doneRequestIds.contains(request.getUuid())) {
     }
     doneRequestIds.remove(request.getUuid());

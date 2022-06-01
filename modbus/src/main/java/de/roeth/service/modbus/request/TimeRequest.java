@@ -25,6 +25,10 @@ public class TimeRequest extends Request<String> {
     return runtime >= durationMs;
   }
 
+  public void interrupt() {
+    runtime = durationMs;
+  }
+
   public boolean isStarted() {
     return runtime > 0;
   }
