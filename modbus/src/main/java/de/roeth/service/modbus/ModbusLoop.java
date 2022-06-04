@@ -47,13 +47,13 @@ public class ModbusLoop {
   private final StatusKeeper keeper = new StatusKeeper();
   @Autowired
   public ModbusProperties properties;
-  //  private Modbus modbus;
+  private Modbus modbus;
   private DeviceMapper deviceMapper;
 
   @PostConstruct
   public void init() {
     log.info("Initializing Modbus interface");
-    //    modbus = new Modbus(properties);
+    modbus = new Modbus(properties);
     log.info("Initializing Device Mapper");
     try {
       deviceMapper = new ObjectMapper().readValue(properties.getDevices(), DeviceMapper.class);
@@ -80,20 +80,18 @@ public class ModbusLoop {
     }
   }
 
-  @Scheduled(fixedDelay = 1)
+  @Scheduled(fixedDelay = 5)
   public void loop() {
-    //    if(modbus == null) {
-    //      log.error("Modbus not initialized!");
-    //      return;
-    //    }
+    if (modbus == null) {
+      log.error("Modbus not initialized!");
+      return;
+    }
     try {
       if (!requests.isEmpty() || !timeRequests.isEmpty()) {
         List<Request> doneRequests = new ArrayList<>();
         requests.forEach(request -> {
           processRequest(request);
-          if (doneRequestIds.contains(request.getUuid())) {
-            doneRequests.add(request);
-          }
+          doneRequests.add(request);
         });
         timeRequests.forEach(request -> {
           processRequest(request);
@@ -146,19 +144,20 @@ public class ModbusLoop {
     doneRequestIds.add(request.getUuid());
   }
 
-  private void processTimeRequest(TimeRequest request) {
+  private void processTimeRequest(TimeRequest request)
+      throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
     Device device = new Device(request.getServerAddress(), request.getStartAddress());
     if (!request.isStarted()) {
       request.start();
       keeper.setStatus(device, true);
-      //      modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), true);
+      modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), true);
       log.info("Started time request for device: " + device);
     } else {
       request.update();
     }
     if (request.isDone()) {
       keeper.setStatus(device, false);
-      //      modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), false);
+      modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), false);
       log.info("Finalized time request for device: " + device);
       doneRequestIds.add(request.getUuid());
     }
@@ -168,26 +167,23 @@ public class ModbusLoop {
       throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
     Device device = new Device(request.getServerAddress(), request.getStartAddress());
     boolean newStatus = keeper.flipStatus(device);
-    //    modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), newStatus);
+    modbus.getMaster().writeSingleCoil(request.getServerAddress(), request.getStartAddress(), newStatus);
     log.info(device + " has new status: " + newStatus);
-    log.info("Keeper: " + keeper);
     doneRequestIds.add(request.getUuid());
   }
 
   private void processReadCoilsRequest(ReadCoilsRequest request)
       throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
-    //    boolean[] coils =
-    //        modbus.getMaster().readCoils(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
-    boolean[] coils = new boolean[8];
+    boolean[] coils =
+        modbus.getMaster().readCoils(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
     request.setResponse(coils);
     doneRequestIds.add(request.getUuid());
   }
 
   private void processReadDiscreteInputRequest(ReadDiscreteInputRequest request)
       throws ModbusNumberException, ModbusProtocolException, ModbusIOException {
-    //    boolean[] coils = modbus.getMaster()
-    //        .readDiscreteInputs(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
-    boolean[] coils = new boolean[8];
+    boolean[] coils = modbus.getMaster()
+        .readDiscreteInputs(request.getServerAddress(), request.getStartAddress(), request.getQuantity());
     request.setResponse(coils);
     doneRequestIds.add(request.getUuid());
   }
@@ -217,6 +213,21 @@ public class ModbusLoop {
     }
     doneRequestIds.remove(request.getUuid());
     return request.getResponse();
+  }
+
+  @PostMapping("/read_status")
+  public boolean readCoilStatus(@RequestParam(value = "server_address") int serverAddress,
+      @RequestParam(value = "device_number") int deviceNumber) {
+    return keeper.getStatus(new Device(serverAddress, deviceNumber));
+  }
+
+  @PostMapping("/read_named_status")
+  public boolean readNamedCoilStatus(@RequestParam(value = "name") String name) {
+    Device device = deviceMapper.getDevice(name);
+    if (device != null) {
+      return keeper.getStatus(device);
+    }
+    return false;
   }
 
   @PostMapping("/flip_coil")

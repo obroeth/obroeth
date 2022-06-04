@@ -4,6 +4,6 @@
 <error line="18" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
 </file>
 <file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\switch-control\src\main\java\de\roeth\service\switchcontrol\SwitchControlLoop.java">
-<error line="26" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
+<error line="30" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
 </file>
 </checkstyle>
