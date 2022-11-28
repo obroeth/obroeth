@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="8.8">
-<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\switch-control\src\main\java\de\roeth\service\switchcontrol\Device.java">
-<error line="18" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
-</file>
-<file name="C:\Users\oroet\Documents\JavaCode\marius-smart-home\obroeth\switch-control\src\main\java\de\roeth\service\switchcontrol\SwitchControlLoop.java">
-<error line="30" column="3" severity="warning" message="Es fehlt ein Javadoc-Kommentar." source="com.puppycrawl.tools.checkstyle.checks.javadoc.JavadocMethodCheck"/>
-</file>
-</checkstyle>
