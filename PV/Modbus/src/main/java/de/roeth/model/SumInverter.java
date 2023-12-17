@@ -1,0 +1,59 @@
+package de.roeth.model;
+
+import de.roeth.modbus.ModbusCall;
+
+public class SumInverter extends Entity{
+
+    public SumInverter(Solax solax, Deye deye) {
+        super("sum");
+        this.solax = solax;
+        this.deye = deye;
+    }
+
+    private Solax solax;
+    private Deye deye;
+
+    private ModbusCall makeFake(int i) {
+        ModbusCall fake = new ModbusCall();
+        // PV Power Total
+        switch (i) {
+            case 0:
+                int deye_pv_power = deye.modbusCallByName("pv_power_1").value() + deye.modbusCallByName("pv_power_2").value();
+                int solax_pv_power = 0;
+                fake.name = name + "_pv_power";
+                fake.values.add(deye_pv_power + solax_pv_power);
+                fake.unit = "W";
+                fake.scale = 1;
+                break;
+            case 1:
+                deye_pv_power = deye.modbusCallByName("pv_power_1").value() + deye.modbusCallByName("pv_power_2").value();
+                solax_pv_power = 0;
+                int deye_grid_power = deye.modbusCallByName("total_grid_power").value();
+                fake.name = name + "_load_power";
+                fake.values.add(deye_pv_power + solax_pv_power + deye_grid_power);
+                fake.unit = "W";
+                fake.scale = 1;
+        }
+        return fake;
+    }
+
+    @Override
+    public int getPropertyLength() {
+        return 2;
+    }
+
+    @Override
+    public String getPropertyName(int i) {
+        return makeFake(i).name;
+    }
+
+    @Override
+    public int getPropertyValue(int i) {
+        return makeFake(i).value();
+    }
+
+    @Override
+    public String getPropertyPrettyValue(int i) {
+        return makeFake(i).pretty();
+    }
+}
