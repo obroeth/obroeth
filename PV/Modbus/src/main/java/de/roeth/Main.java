@@ -8,12 +8,11 @@ import de.roeth.model.Deye;
 import de.roeth.model.Solax;
 import de.roeth.model.SumInverter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Main {
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         long lastInfluxUpdate = 0;
         while (true) {
             try {
@@ -28,13 +27,13 @@ public class Main {
                 OpenHabIO.pushToOpenhab(sum);
 
                 // Export Influx
-                if(System.currentTimeMillis() - lastInfluxUpdate >= 60000) {
+                if (System.currentTimeMillis() - lastInfluxUpdate >= 60000) {
                     lastInfluxUpdate = System.currentTimeMillis();
                     InfluxIO.pushToInflux(solax);
                     InfluxIO.pushToInflux(deye);
                     InfluxIO.pushToInflux(sum);
                 }
-                long duration = (int)((System.currentTimeMillis() - start) / 1000.);
+                long duration = (int) ((System.currentTimeMillis() - start) / 1000.);
                 System.out.println(new Date() + ": Iteration SUCCESS after " + duration + "ms");
                 Thread.sleep(10000);
             } catch (Exception e) {

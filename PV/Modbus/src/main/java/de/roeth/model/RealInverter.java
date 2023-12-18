@@ -9,6 +9,9 @@ import java.util.Map;
 
 public abstract class RealInverter extends Entity {
 
+    private final Map<String, ModbusCall> modbusCallByName = new HashMap<>();
+    public ArrayList<ModbusCall> modbusCalls;
+    public ModbusRegister register;
     public RealInverter(String name, ArrayList<ModbusCall> modbusCalls, ModbusRegister register) {
         super(name);
         this.modbusCalls = modbusCalls;
@@ -16,10 +19,6 @@ public abstract class RealInverter extends Entity {
         performOnCalls();
         createNameMap();
     }
-
-    public ArrayList<ModbusCall> modbusCalls;
-    public ModbusRegister register;
-    private final Map<String, ModbusCall> modbusCallByName = new HashMap<>();
 
     private void createNameMap() {
         for (ModbusCall call : modbusCalls) {
@@ -42,10 +41,10 @@ public abstract class RealInverter extends Entity {
     private ModbusCall makeFake(int i) {
         ModbusCall fake = new ModbusCall();
         // PV Power Total
-        if(i == modbusCalls.size()) {
+        if (i == modbusCalls.size()) {
             fake.name = name + "_pv_power_total";
             fake.addValue(modbusCallByName("pv_power_1").value() + modbusCallByName("pv_power_2").value());
-            fake.unit =  "W";
+            fake.unit = "W";
             fake.scale = 1;
         }
         return fake;
@@ -53,7 +52,7 @@ public abstract class RealInverter extends Entity {
 
     @Override
     public String getPropertyName(int i) {
-        if(i < modbusCalls.size()) {
+        if (i < modbusCalls.size()) {
             return name + "_" + modbusCalls.get(i).name;
         }
         return makeFake(i).name;
@@ -61,7 +60,7 @@ public abstract class RealInverter extends Entity {
 
     @Override
     public int getPropertyValue(int i) {
-        if(i < modbusCalls.size()) {
+        if (i < modbusCalls.size()) {
             return modbusCalls.get(i).value();
         }
         return makeFake(i).value();
@@ -69,7 +68,7 @@ public abstract class RealInverter extends Entity {
 
     @Override
     public double getPropertyScaledValue(int i) {
-        if(i < modbusCalls.size()) {
+        if (i < modbusCalls.size()) {
             return modbusCalls.get(i).scaledValue();
         }
         return makeFake(i).scaledValue();
@@ -77,7 +76,7 @@ public abstract class RealInverter extends Entity {
 
     @Override
     public String getPropertyPrettyValue(int i) {
-        if(i < modbusCalls.size()) {
+        if (i < modbusCalls.size()) {
             return modbusCalls.get(i).pretty();
         }
         return makeFake(i).pretty();

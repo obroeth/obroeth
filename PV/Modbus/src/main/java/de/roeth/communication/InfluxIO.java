@@ -24,7 +24,7 @@ public class InfluxIO {
         whitelist.add("deye_total_grid_power");
 
         for (int i = 0; i < deye.getPropertyLength(); i++) {
-            if(whitelist.contains(deye.getPropertyName(i))) {
+            if (whitelist.contains(deye.getPropertyName(i))) {
                 dataPoint.addField(deye.getPropertyName(i), deye.getPropertyScaledValue(i));
             }
         }
@@ -39,10 +39,10 @@ public class InfluxIO {
         Point.Builder dataPoint = Point.measurement("pv-sum");
 
         for (int i = 0; i < sum.getPropertyLength(); i++) {
-            if(sum.getPropertyName(i).contains("_pv_power")) {
+            if (sum.getPropertyName(i).contains("_pv_power")) {
                 dataPoint.addField("pv_power", sum.getPropertyScaledValue(i));
             }
-            if(sum.getPropertyName(i).contains("_load_power")) {
+            if (sum.getPropertyName(i).contains("_load_power")) {
                 dataPoint.addField("load_power", sum.getPropertyScaledValue(i));
             }
         }

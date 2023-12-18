@@ -2,16 +2,15 @@ package de.roeth.model;
 
 import de.roeth.modbus.ModbusCall;
 
-public class SumInverter extends Entity{
+public class SumInverter extends Entity {
 
+    private Solax solax;
+    private Deye deye;
     public SumInverter(Solax solax, Deye deye) {
         super("sum");
         this.solax = solax;
         this.deye = deye;
     }
-
-    private Solax solax;
-    private Deye deye;
 
     private ModbusCall makeFake(int i) {
         ModbusCall fake = new ModbusCall();

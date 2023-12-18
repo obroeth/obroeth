@@ -23,8 +23,10 @@ public class ModbusFileIO {
     private static ArrayList<ModbusCall> readModbusCalls(String file) throws IOException {
         ArrayList<ModbusCall> modbusCalls = new ArrayList<>();
 
-        InputStream stream = Main.class.getClassLoader().getResourceAsStream(file);
-        String string = new String(Objects.requireNonNull(stream).readAllBytes(), StandardCharsets.UTF_8);
+        String string;
+        try (InputStream stream = Main.class.getClassLoader().getResourceAsStream(file)) {
+            string = new String(Objects.requireNonNull(stream).readAllBytes(), StandardCharsets.UTF_8);
+        }
         JSONArray root = new JSONArray(string);
 
         for (int i = 0; i < root.length(); i++) {
@@ -46,15 +48,17 @@ public class ModbusFileIO {
     private static ArrayList<ModbusCallSequence> readModbusSequences(String file) throws IOException {
         ArrayList<ModbusCallSequence> sequences = new ArrayList<>();
 
-        InputStream stream = Main.class.getClassLoader().getResourceAsStream(file);
-        String string = new String(Objects.requireNonNull(stream).readAllBytes(), StandardCharsets.UTF_8);
+        String string;
+        try (InputStream stream = Main.class.getClassLoader().getResourceAsStream(file)) {
+            string = new String(Objects.requireNonNull(stream).readAllBytes(), StandardCharsets.UTF_8);
+        }
         JSONArray root = new JSONArray(string);
 
         for (int i = 0; i < root.length(); i++) {
             JSONObject call = root.getJSONObject(i);
             int start = call.getInt("start");
             int end = call.getInt("end");
-            sequences.add(new ModbusCallSequence( start, end));
+            sequences.add(new ModbusCallSequence(start, end));
         }
 
         return sequences;

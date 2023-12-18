@@ -18,7 +18,7 @@ public class ModbusRegister {
 
     public void fillRegister(ModbusCallSequence seq, Register[] registers) {
         for (int i = seq.startRegister; i <= seq.endRegister; i++) {
-            addRegisterEntry(new ModbusRegisterEntry(i, registers[i-seq.startRegister].toShort()));
+            addRegisterEntry(new ModbusRegisterEntry(i, registers[i - seq.startRegister].toShort()));
         }
     }
 

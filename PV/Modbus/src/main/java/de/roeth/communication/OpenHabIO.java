@@ -22,7 +22,7 @@ public class OpenHabIO {
         HttpURLConnection con = getHttpURLConnection(data, new URL(url));
         int responseCode = con.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            System.out.println("POST Request failed. Tried to send name: " + name +  " and data: " + data);
+            System.out.println("POST Request failed. Tried to send name: " + name + " and data: " + data);
         }
     }
 

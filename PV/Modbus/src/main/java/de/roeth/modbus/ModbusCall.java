@@ -5,6 +5,13 @@ import java.util.ArrayList;
 
 public class ModbusCall {
 
+    private static final DecimalFormat df = new DecimalFormat("0.0");
+    private final ArrayList<Integer> values = new ArrayList<>();
+    public String name;
+    public int[] register;
+    public double scale;
+    public String unit;
+
     public ModbusCall() {
         this("", new int[0], 1, "");
     }
@@ -16,20 +23,10 @@ public class ModbusCall {
         this.unit = unit;
     }
 
-    public String name;
-    public int[] register;
-    public double scale;
-    public String unit;
-    private ArrayList<Integer> values = new ArrayList<>();
-
-    public void addValue(int value)
-    {
-//        if(signed && value > 30000) {
-//            values.add(value - 65535);
-//        } else {
-            values.add(value);
-        //}
+    public void addValue(int value) {
+        values.add(value);
     }
+
     public int value() {
         return values.get(0);
     }
@@ -38,7 +35,6 @@ public class ModbusCall {
         return value() * scale;
     }
 
-    private static final DecimalFormat df = new DecimalFormat("0.0");
     public String pretty() {
         return df.format(scaledValue()) + " " + unit;
     }

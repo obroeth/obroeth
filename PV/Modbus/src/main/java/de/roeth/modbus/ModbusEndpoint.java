@@ -4,7 +4,13 @@ import com.ghgande.j2mod.modbus.util.SerialParameters;
 
 public class ModbusEndpoint {
 
-    public static ModbusEndpoint DEYE = new ModbusEndpoint("/dev/ttyUSB0", 1,9600, "none", 8, 1);
+    public static ModbusEndpoint DEYE = new ModbusEndpoint("/dev/ttyUSB0", 1, 9600, "none", 8, 1);
+    public String port;
+    public int slave;
+    public int baudrate;
+    public String parity;
+    public int databits;
+    public int stopbits;
     public ModbusEndpoint(String port, int slave, int baudrate, String parity, int databits, int stopbits) {
         this.port = port;
         this.slave = slave;
@@ -13,13 +19,6 @@ public class ModbusEndpoint {
         this.databits = databits;
         this.stopbits = stopbits;
     }
-
-    public String port;
-    public int slave;
-    public int baudrate;
-    public String parity;
-    public int databits;
-    public int stopbits;
 
     public SerialParameters getParameter() {
         SerialParameters param = new SerialParameters();
