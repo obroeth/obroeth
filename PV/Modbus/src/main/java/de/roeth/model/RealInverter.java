@@ -30,7 +30,7 @@ public abstract class RealInverter extends Entity {
     private void performOnCalls() {
         for (ModbusCall call : modbusCalls) {
             for (int i : call.register) {
-                call.values.add(register.getRegister(i));
+                call.addValue((register.getRegister(i)));
             }
         }
     }
@@ -44,7 +44,7 @@ public abstract class RealInverter extends Entity {
         // PV Power Total
         if(i == modbusCalls.size()) {
             fake.name = name + "_pv_power_total";
-            fake.values.add(modbusCallByName("pv_power_1").value() + modbusCallByName("pv_power_2").value());
+            fake.addValue(modbusCallByName("pv_power_1").value() + modbusCallByName("pv_power_2").value());
             fake.unit =  "W";
             fake.scale = 1;
         }
@@ -65,6 +65,14 @@ public abstract class RealInverter extends Entity {
             return modbusCalls.get(i).value();
         }
         return makeFake(i).value();
+    }
+
+    @Override
+    public double getPropertyScaledValue(int i) {
+        if(i < modbusCalls.size()) {
+            return modbusCalls.get(i).scaledValue();
+        }
+        return makeFake(i).scaledValue();
     }
 
     @Override

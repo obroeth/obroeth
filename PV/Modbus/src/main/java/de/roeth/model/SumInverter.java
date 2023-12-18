@@ -21,7 +21,7 @@ public class SumInverter extends Entity{
                 int deye_pv_power = deye.modbusCallByName("pv_power_1").value() + deye.modbusCallByName("pv_power_2").value();
                 int solax_pv_power = 0;
                 fake.name = name + "_pv_power";
-                fake.values.add(deye_pv_power + solax_pv_power);
+                fake.addValue(deye_pv_power + solax_pv_power);
                 fake.unit = "W";
                 fake.scale = 1;
                 break;
@@ -30,7 +30,7 @@ public class SumInverter extends Entity{
                 solax_pv_power = 0;
                 int deye_grid_power = deye.modbusCallByName("total_grid_power").value();
                 fake.name = name + "_load_power";
-                fake.values.add(deye_pv_power + solax_pv_power + deye_grid_power);
+                fake.addValue(deye_pv_power + solax_pv_power + deye_grid_power);
                 fake.unit = "W";
                 fake.scale = 1;
         }
@@ -50,6 +50,11 @@ public class SumInverter extends Entity{
     @Override
     public int getPropertyValue(int i) {
         return makeFake(i).value();
+    }
+
+    @Override
+    public double getPropertyScaledValue(int i) {
+        return makeFake(i).scaledValue();
     }
 
     @Override

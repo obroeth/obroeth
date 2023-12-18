@@ -11,6 +11,7 @@ public abstract class Entity {
     public abstract int getPropertyLength();
     public abstract String getPropertyName(int i);
     public abstract int getPropertyValue(int i);
+    public abstract double getPropertyScaledValue(int i);
     public abstract String getPropertyPrettyValue(int i);
 
 }

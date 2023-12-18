@@ -20,14 +20,26 @@ public class ModbusCall {
     public int[] register;
     public double scale;
     public String unit;
-    public ArrayList<Integer> values = new ArrayList<>();
+    private ArrayList<Integer> values = new ArrayList<>();
 
+    public void addValue(int value)
+    {
+//        if(signed && value > 30000) {
+//            values.add(value - 65535);
+//        } else {
+            values.add(value);
+        //}
+    }
     public int value() {
         return values.get(0);
     }
 
+    public double scaledValue() {
+        return value() * scale;
+    }
+
     private static final DecimalFormat df = new DecimalFormat("0.0");
     public String pretty() {
-        return df.format(value() * scale) + " " + unit;
+        return df.format(scaledValue()) + " " + unit;
     }
 }
