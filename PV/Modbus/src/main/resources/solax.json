@@ -1,0 +1,154 @@
+[
+  {
+    "name": "daily_production",
+    "register": [
+      1061
+    ],
+    "scale": 0.1,
+    "unit": "kWh"
+  },
+  {
+    "name": "total_production",
+    "register": [
+      1059
+    ],
+    "scale": 0.1,
+    "unit": "kWh"
+  },
+  {
+    "name": "pv_power_1",
+    "register": [
+      1044
+    ],
+    "scale": 1,
+    "unit": "W"
+  },
+  {
+    "name": "pv_power_2",
+    "register": [
+      1045
+    ],
+    "scale": 1,
+    "unit": "W"
+  },
+  {
+    "name": "pv_voltage_1",
+    "register": [
+      1024
+    ],
+    "scale": 0.1,
+    "unit": "V"
+  },
+  {
+    "name": "pv_voltage_2",
+    "register": [
+      1025
+    ],
+    "scale": 0.1,
+    "unit": "V"
+  },
+  {
+    "name": "pv_current_1",
+    "register": [
+      1026
+    ],
+    "scale": 0.1,
+    "unit": "A"
+  },
+  {
+    "name": "pv_current_2",
+    "register": [
+      1027
+    ],
+    "scale": 0.1,
+    "unit": "A"
+  },
+  {
+    "name": "total_grid_power",
+    "register": [
+      1038
+    ],
+    "scale": 1,
+    "unit": "W"
+  },
+  {
+    "name": "grid_voltage_1",
+    "register": [
+      1028
+    ],
+    "scale": 0.1,
+    "unit": "V"
+  },
+  {
+    "name": "grid_voltage_2",
+    "register": [
+      1029
+    ],
+    "scale": 0.1,
+    "unit": "V"
+  },
+  {
+    "name": "grid_voltage_3",
+    "register": [
+      1030
+    ],
+    "scale": 0.1,
+    "unit": "V"
+  },
+  {
+    "name": "grid_current_1",
+    "register": [
+      1034
+    ],
+    "scale": 0.1,
+    "unit": "A"
+  },
+  {
+    "name": "grid_current_2",
+    "register": [
+      1035
+    ],
+    "scale": 0.1,
+    "unit": "A"
+  },
+  {
+    "name": "grid_current_3",
+    "register": [
+      1036
+    ],
+    "scale": 0.1,
+    "unit": "A"
+  },
+  {
+    "name": "temperature",
+    "register": [
+      1037
+    ],
+    "scale": 1,
+    "unit": "°C"
+  },
+  {
+    "name": "grid_power_1",
+    "register": [
+      1040
+    ],
+    "scale": 1,
+    "unit": "W"
+  },
+  {
+    "name": "grid_power_2",
+    "register": [
+      1041
+    ],
+    "scale": 1,
+    "unit": "W"
+  },
+  {
+    "name": "grid_power_3",
+    "register": [
+      1042
+    ],
+    "scale": 1,
+    "unit": "W"
+  }
+]

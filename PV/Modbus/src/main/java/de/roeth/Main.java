@@ -3,7 +3,10 @@ package de.roeth;
 
 import de.roeth.communication.InfluxIO;
 import de.roeth.communication.OpenHabIO;
-import de.roeth.modbus.*;
+import de.roeth.modbus.ModbusCall;
+import de.roeth.modbus.ModbusCallSequence;
+import de.roeth.modbus.ModbusFileIO;
+import de.roeth.modbus.ModbusRegister;
 import de.roeth.model.Deye;
 import de.roeth.model.Solax;
 import de.roeth.model.SumInverter;
@@ -13,12 +16,12 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            System.out.println("Wait a minute before start...");
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            System.out.println("Wait a minute before start...");
+//            Thread.sleep(60000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
         long lastInfluxUpdate = 0;
         while (true) {
@@ -30,7 +33,7 @@ public class Main {
 
                 // Export Openhab
                 OpenHabIO.pushToOpenhab(deye);
-                //OpenHabIO.pushToOpenhab(solax);
+                OpenHabIO.pushToOpenhab(solax);
                 OpenHabIO.pushToOpenhab(sum);
 
                 // Export Influx
@@ -40,7 +43,7 @@ public class Main {
                     InfluxIO.pushToInflux(deye);
                     InfluxIO.pushToInflux(sum);
                 }
-                long duration = (int) ((System.currentTimeMillis() - start) / 1000.);
+//                long duration = (int) ((System.currentTimeMillis() - start) / 1000.);
 //                System.out.println(new Date() + ": Iteration SUCCESS after " + duration + "ms");
                 Thread.sleep(10000);
             } catch (Exception e) {
@@ -50,8 +53,18 @@ public class Main {
         }
     }
 
-    private static Solax makeSolax() {
-        return new Solax(new ArrayList<>(), new ModbusRegister());
+    private static Solax makeSolax() throws Exception {
+        ArrayList<ModbusCallSequence> sequences = ModbusFileIO.readSolaxModbusSequences();
+        ArrayList<ModbusCall> modbusCalls = ModbusFileIO.readSolaxModbusCalls();
+        ModbusRegister modbusRegister = new ModbusRegister();
+        Solax solax = new Solax(modbusCalls, modbusRegister);
+
+        for (ModbusCallSequence sequence : sequences) {
+            modbusRegister.fillRegister(sequence, solax.readRegister(sequence));
+        }
+
+        solax.perform();
+        return solax;
     }
 
     private static Deye makeDeye() throws Exception {
@@ -59,11 +72,13 @@ public class Main {
         ArrayList<ModbusCallSequence> sequences = ModbusFileIO.readDeyeModbusSequences();
         ArrayList<ModbusCall> modbusCalls = ModbusFileIO.readDeyeModbusCalls();
         ModbusRegister modbusRegister = new ModbusRegister();
+        Deye deye = new Deye(modbusCalls, modbusRegister);
+
         for (ModbusCallSequence sequence : sequences) {
-            modbusRegister.fillRegister(sequence, ModbusRegisterIO.readRegisters(ModbusEndpoint.DEYE, sequence));
+            modbusRegister.fillRegister(sequence, deye.readRegister(sequence));
         }
 
-        // 2.) Create Deye and answer requests
-        return new Deye(modbusCalls, modbusRegister);
+        deye.perform();
+        return deye;
     }
 }

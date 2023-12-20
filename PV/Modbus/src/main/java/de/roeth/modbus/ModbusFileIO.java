@@ -20,6 +20,14 @@ public class ModbusFileIO {
         return readModbusCalls("deye.json");
     }
 
+    public static ArrayList<ModbusCallSequence> readSolaxModbusSequences() throws IOException {
+        return readModbusSequences("solax_seq.json");
+    }
+
+    public static ArrayList<ModbusCall> readSolaxModbusCalls() throws IOException {
+        return readModbusCalls("solax.json");
+    }
+
     private static ArrayList<ModbusCall> readModbusCalls(String file) throws IOException {
         ArrayList<ModbusCall> modbusCalls = new ArrayList<>();
 
@@ -39,7 +47,11 @@ public class ModbusFileIO {
             }
             double scale = call.getDouble("scale");
             String unit = call.getString("unit");
-            modbusCalls.add(new ModbusCall(name, registers, scale, unit));
+            int offset = 0;
+            if (call.has("offset")) {
+                offset = call.getInt("offset");
+            }
+            modbusCalls.add(new ModbusCall(name, registers, scale, unit, offset));
         }
 
         return modbusCalls;

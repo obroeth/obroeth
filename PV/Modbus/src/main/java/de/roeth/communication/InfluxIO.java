@@ -13,7 +13,10 @@ import java.util.ArrayList;
 public class InfluxIO {
 
     public static void pushToInflux(Solax solax) {
+        ArrayList<String> whitelist = new ArrayList<>();
+        whitelist.add("solax_daily_production");
 
+        pushToInflux(solax, whitelist);
     }
 
     public static void pushToInflux(Deye deye) {

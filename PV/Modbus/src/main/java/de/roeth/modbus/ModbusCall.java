@@ -11,16 +11,22 @@ public class ModbusCall {
     public int[] register;
     public double scale;
     public String unit;
+    public int offset;
 
     public ModbusCall() {
-        this("", new int[0], 1, "");
+        this("", new int[0], 1, "", 0);
     }
 
     public ModbusCall(String name, int[] register, double scale, String unit) {
+        this(name, register, scale, unit, 0);
+    }
+
+    public ModbusCall(String name, int[] register, double scale, String unit, int offset) {
         this.name = name;
         this.register = register;
         this.scale = scale;
         this.unit = unit;
+        this.offset = offset;
     }
 
     public void addValue(int value) {
@@ -28,7 +34,7 @@ public class ModbusCall {
     }
 
     public int value() {
-        return values.get(0);
+        return values.get(0) + offset;
     }
 
     public double scaledValue() {

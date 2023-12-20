@@ -1,6 +1,6 @@
 package de.roeth.modbus;
 
-import com.ghgande.j2mod.modbus.procimg.Register;
+import com.ghgande.j2mod.modbus.procimg.InputRegister;
 
 import java.util.HashMap;
 
@@ -16,7 +16,7 @@ public class ModbusRegister {
         return entryMap.get(register).value;
     }
 
-    public void fillRegister(ModbusCallSequence seq, Register[] registers) {
+    public void fillRegister(ModbusCallSequence seq, InputRegister[] registers) {
         for (int i = seq.startRegister; i <= seq.endRegister; i++) {
             addRegisterEntry(new ModbusRegisterEntry(i, registers[i - seq.startRegister].toShort()));
         }

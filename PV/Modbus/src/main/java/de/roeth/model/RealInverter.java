@@ -12,10 +12,14 @@ public abstract class RealInverter extends Entity {
     private final Map<String, ModbusCall> modbusCallByName = new HashMap<>();
     public ArrayList<ModbusCall> modbusCalls;
     public ModbusRegister register;
+
     public RealInverter(String name, ArrayList<ModbusCall> modbusCalls, ModbusRegister register) {
         super(name);
         this.modbusCalls = modbusCalls;
         this.register = register;
+    }
+
+    public void perform() {
         performOnCalls();
         createNameMap();
     }
