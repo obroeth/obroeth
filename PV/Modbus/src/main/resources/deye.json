@@ -5,7 +5,9 @@
       529
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": true
   },
   {
     "name": "total_production",
@@ -14,7 +16,9 @@
       535
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "pv_power_1",
@@ -150,7 +154,9 @@
       520
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": true
   },
   {
     "name": "total_energy_bought",
@@ -159,7 +165,9 @@
       523
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "daily_energy_sold",
@@ -167,7 +175,9 @@
       521
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": true
   },
   {
     "name": "total_energy_sold",
@@ -176,7 +186,9 @@
       525
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "total_load_power",
@@ -323,7 +335,9 @@
       514
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": true
   },
   {
     "name": "daily_battery_discharge",
@@ -331,7 +345,9 @@
       515
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": true
   },
   {
     "name": "total_battery_charge",
@@ -340,7 +356,9 @@
       517
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "total_battery_discharge",
@@ -349,7 +367,9 @@
       519
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "battery_power",
@@ -373,7 +393,9 @@
       588
     ],
     "scale": 1,
-    "unit": "%"
+    "unit": "%",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "battery_current",

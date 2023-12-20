@@ -20,14 +20,13 @@ public class Deye extends RealInverter {
             modbusMaster.connect();
             Register[] registers = modbusMaster.readMultipleRegisters(getEndpoint().slave, sequence.startRegister, sequence.length());
             modbusMaster.disconnect();
+
+            LogRegister.writeLogRegister(registers, sequence, "deye.out.json");
             return registers;
         } catch (Exception e) {
+            e.printStackTrace();
             modbusMaster.disconnect();
-            FakeRegister[] fake = new FakeRegister[sequence.length()];
-            for (int i = 0; i < sequence.length(); i++) {
-                fake[i] = new FakeRegister();
-            }
-            return fake;
+            return LogRegister.readLogRegister(sequence, "deye.out.json");
         }
     }
 

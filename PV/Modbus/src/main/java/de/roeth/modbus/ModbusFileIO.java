@@ -51,7 +51,15 @@ public class ModbusFileIO {
             if (call.has("offset")) {
                 offset = call.getInt("offset");
             }
-            modbusCalls.add(new ModbusCall(name, registers, scale, unit, offset));
+            boolean cachable = false;
+            if (call.has("cachable")) {
+                cachable = call.getBoolean("cachable");
+            }
+            boolean resetCacheAtNewDay = false;
+            if (call.has("resetCacheAtNewDay")) {
+                resetCacheAtNewDay = call.getBoolean("resetCacheAtNewDay");
+            }
+            modbusCalls.add(new ModbusCall(name, registers, scale, unit, offset, cachable, resetCacheAtNewDay));
         }
 
         return modbusCalls;

@@ -17,16 +17,15 @@ public class Solax extends RealInverter {
         ModbusSerialMaster modbusMaster = new ModbusSerialMaster(getEndpoint().getParameter());
         try {
             modbusMaster.connect();
-            InputRegister[] inputRegisters = modbusMaster.readInputRegisters(sequence.startRegister, sequence.length());
+            InputRegister[] registers = modbusMaster.readInputRegisters(sequence.startRegister, sequence.length());
             modbusMaster.disconnect();
-            return inputRegisters;
+
+            LogRegister.writeLogRegister(registers, sequence, "solax.out.json");
+            return registers;
         } catch (Exception e) {
             modbusMaster.disconnect();
-            FakeRegister[] fake = new FakeRegister[sequence.length()];
-            for (int i = 0; i < sequence.length(); i++) {
-                fake[i] = new FakeRegister();
-            }
-            return fake;
+            System.out.println("Using cache!");
+            return LogRegister.readLogRegister(sequence, "solax.out.json");
         }
     }
 

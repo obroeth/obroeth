@@ -12,21 +12,21 @@ public class ModbusCall {
     public double scale;
     public String unit;
     public int offset;
+    public boolean cachable;
+    public boolean resetCacheAtNewDay;
 
     public ModbusCall() {
-        this("", new int[0], 1, "", 0);
+        this("", new int[0], 1, "", 0, false, false);
     }
 
-    public ModbusCall(String name, int[] register, double scale, String unit) {
-        this(name, register, scale, unit, 0);
-    }
-
-    public ModbusCall(String name, int[] register, double scale, String unit, int offset) {
+    public ModbusCall(String name, int[] register, double scale, String unit, int offset, boolean cachable, boolean resetCacheAtNewDay) {
         this.name = name;
         this.register = register;
         this.scale = scale;
         this.unit = unit;
         this.offset = offset;
+        this.cachable = cachable;
+        this.resetCacheAtNewDay = resetCacheAtNewDay;
     }
 
     public void addValue(int value) {

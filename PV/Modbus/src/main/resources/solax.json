@@ -5,7 +5,9 @@
       1061
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": true
   },
   {
     "name": "total_production",
@@ -13,7 +15,9 @@
       1059
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "cachable": true,
+    "resetCacheAtNewDay": false
   },
   {
     "name": "pv_power_1",

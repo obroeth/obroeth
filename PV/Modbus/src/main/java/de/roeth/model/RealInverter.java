@@ -33,7 +33,7 @@ public abstract class RealInverter extends Entity {
     private void performOnCalls() {
         for (ModbusCall call : modbusCalls) {
             for (int i : call.register) {
-                call.addValue((register.getRegister(i)));
+                call.addValue((register.getRegister(i, call.cachable, call.resetCacheAtNewDay)));
             }
         }
     }

@@ -11,18 +11,20 @@ import de.roeth.model.Deye;
 import de.roeth.model.Solax;
 import de.roeth.model.SumInverter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        try {
 //            System.out.println("Wait a minute before start...");
 //            Thread.sleep(60000);
 //        } catch (InterruptedException e) {
 //            throw new RuntimeException(e);
 //        }
-
+//        System.out.println("... and go!");
+        System.out.println(new Date().getTime());
         long lastInfluxUpdate = 0;
         while (true) {
             try {
@@ -30,6 +32,7 @@ public class Main {
                 Deye deye = makeDeye();
                 Solax solax = makeSolax();
                 SumInverter sum = new SumInverter(solax, deye);
+                int propertyValue = sum.getPropertyValue(5);
 
                 // Export Openhab
                 OpenHabIO.pushToOpenhab(deye);
