@@ -6,6 +6,7 @@ public class SumInverter extends Entity {
 
     private Solax solax;
     private Deye deye;
+
     public SumInverter(Solax solax, Deye deye) {
         super("sum");
         this.solax = solax;
@@ -32,13 +33,22 @@ public class SumInverter extends Entity {
                 fake.addValue(deye_pv_power + solax_pv_power + deye_grid_power);
                 fake.unit = "W";
                 fake.scale = 1;
+                break;
+            case 2:
+                int deye_daily_prod = deye.modbusCallByName("daily_production").value();
+                int solax_daily_prod = 0;
+                fake.name = name + "_daily_production";
+                fake.addValue(deye_daily_prod + solax_daily_prod);
+                fake.unit = "kWh";
+                fake.scale = 0.1;
+                break;
         }
         return fake;
     }
 
     @Override
     public int getPropertyLength() {
-        return 2;
+        return 3;
     }
 
     @Override

@@ -13,6 +13,13 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) {
+        try {
+            System.out.println("Wait a minute before start...");
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         long lastInfluxUpdate = 0;
         while (true) {
             try {
@@ -34,7 +41,7 @@ public class Main {
                     InfluxIO.pushToInflux(sum);
                 }
                 long duration = (int) ((System.currentTimeMillis() - start) / 1000.);
-                System.out.println(new Date() + ": Iteration SUCCESS after " + duration + "ms");
+//                System.out.println(new Date() + ": Iteration SUCCESS after " + duration + "ms");
                 Thread.sleep(10000);
             } catch (Exception e) {
                 System.out.println(new Date() + ": Iteration FAILED:");
