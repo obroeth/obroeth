@@ -24,7 +24,6 @@ public class Solax extends RealInverter {
             return registers;
         } catch (Exception e) {
             modbusMaster.disconnect();
-            System.out.println("Using cache!");
             return LogRegister.readLogRegister(sequence, "solax.out.json");
         }
     }

@@ -7,13 +7,11 @@ import de.roeth.modbus.ModbusEndpoint;
 
 public class SumInverter extends Entity {
 
-    private Solax solax;
-    private Deye deye;
+    private final Evaluator evaluator;
 
     public SumInverter(Solax solax, Deye deye) {
         super("sum");
-        this.solax = solax;
-        this.deye = deye;
+        this.evaluator = new Evaluator(solax, deye);
     }
 
     private ModbusCall makeFake(int i) {
@@ -21,47 +19,41 @@ public class SumInverter extends Entity {
         // PV Power Total
         switch (i) {
             case 0:
-                int deye_pv_power = deye.modbusCallByName("pv_power_1").value() + deye.modbusCallByName("pv_power_2").value();
-                int solax_pv_power = solax.modbusCallByName("pv_power_1").value() + solax.modbusCallByName("pv_power_2").value();
+                int total_pv_power = evaluator.totalPvPower();
                 fake.name = name + "_pv_power";
-                fake.addValue(deye_pv_power + solax_pv_power);
+                fake.addValue(total_pv_power);
                 fake.unit = "W";
                 fake.scale = 1;
                 break;
             case 1:
-                deye_pv_power = deye.modbusCallByName("pv_power_1").value() + deye.modbusCallByName("pv_power_2").value();
-                solax_pv_power = solax.modbusCallByName("pv_power_1").value() + solax.modbusCallByName("pv_power_2").value();
-                int deye_grid_power = deye.modbusCallByName("total_grid_power").value();
+                total_pv_power = evaluator.totalPvPower();
+                int grid_power = evaluator.totalGridPower();
                 fake.name = name + "_load_power";
-                fake.addValue(deye_pv_power + solax_pv_power + deye_grid_power);
+                fake.addValue(total_pv_power + grid_power);
                 fake.unit = "W";
                 fake.scale = 1;
                 break;
             case 2:
-                int deye_daily_prod = deye.modbusCallByName("daily_production").value();
-                int solax_daily_prod = solax.modbusCallByName("daily_production").value();
+                int daily_prod = evaluator.totalDailyProduction();
                 fake.name = name + "_daily_production";
-                fake.addValue(deye_daily_prod + solax_daily_prod);
+                fake.addValue(daily_prod);
                 fake.unit = "kWh";
                 fake.scale = 0.1;
                 break;
             case 3:
-                int deye_total_prod = deye.modbusCallByName("total_production").value();
-                int solax_total_prod = solax.modbusCallByName("total_production").value();
+                int total_prod = evaluator.totalTotalProduction();
                 fake.name = name + "_total_production";
-                fake.addValue(deye_total_prod + solax_total_prod);
+                fake.addValue(total_prod);
                 fake.unit = "kWh";
                 fake.scale = 0.1;
                 break;
             case 4:
-                int deye_daily_sold = deye.modbusCallByName("daily_energy_sold").value();
-                deye_daily_prod = deye.modbusCallByName("daily_production").value();
-                solax_daily_prod = solax.modbusCallByName("daily_production").value();
-                int total_prod = deye_daily_prod + solax_daily_prod;
+                int daily_sold = evaluator.dailySold();
+                daily_prod = evaluator.totalDailyProduction();
                 fake.name = name + "_daily_own_usage";
                 double val = 0.;
-                if (total_prod > 0) {
-                    val = 1. - 1. * deye_daily_sold / (1. * total_prod);
+                if (daily_prod > 0) {
+                    val = 1. - 1. * daily_sold / (1. * daily_prod);
                 }
                 val = Math.min(val, 1);
                 fake.addValue((int) (100. * val));
@@ -69,14 +61,44 @@ public class SumInverter extends Entity {
                 fake.scale = 1;
                 break;
             case 5:
-                int deye_total_sold = deye.modbusCallByName("total_energy_sold").value();
-                deye_total_prod = deye.modbusCallByName("total_production").value();
-                solax_total_prod = solax.modbusCallByName("total_production").value();
-                total_prod = deye_total_prod + solax_total_prod;
+                int total_sold = evaluator.totalSold();
+                total_prod = evaluator.totalTotalProduction();
                 fake.name = name + "_total_own_usage";
                 val = 0.;
                 if (total_prod > 0) {
-                    val = 1. - 1. * deye_total_sold / (1. * total_prod);
+                    val = 1. - 1. * total_sold / (1. * total_prod);
+                }
+                val = Math.min(val, 1);
+                fake.addValue((int) (100. * val));
+                fake.unit = "%";
+                fake.scale = 1;
+                break;
+            case 6:
+                daily_sold = evaluator.dailySold();
+                int daily_bought = evaluator.dailyBought();
+                daily_prod = evaluator.totalDailyProduction();
+                int own_used = daily_prod - daily_sold;
+                int daily_used = own_used + daily_bought;
+                fake.name = name + "_daily_autarc";
+                val = 0.;
+                if (daily_used > 0) {
+                    val = 1. * own_used / (1. * daily_used);
+                }
+                val = Math.min(val, 1);
+                fake.addValue((int) (100. * val));
+                fake.unit = "%";
+                fake.scale = 1;
+                break;
+            case 7:
+                total_sold = evaluator.totalSold();
+                int total_bought = evaluator.totalBought();
+                total_prod = evaluator.totalTotalProduction();
+                own_used = total_prod - total_sold;
+                int total_used = own_used + total_bought;
+                fake.name = name + "_total_autarc";
+                val = 0.;
+                if (total_used > 0) {
+                    val = 1. * own_used / (1. * total_used);
                 }
                 val = Math.min(val, 1);
                 fake.addValue((int) (100. * val));
@@ -89,7 +111,7 @@ public class SumInverter extends Entity {
 
     @Override
     public int getPropertyLength() {
-        return 6;
+        return 8;
     }
 
     @Override

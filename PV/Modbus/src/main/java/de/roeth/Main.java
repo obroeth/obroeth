@@ -1,6 +1,7 @@
 package de.roeth;
 
 
+import de.roeth.communication.EVTracker;
 import de.roeth.communication.InfluxIO;
 import de.roeth.communication.OpenHabIO;
 import de.roeth.modbus.ModbusCall;
@@ -17,27 +18,29 @@ import java.util.Date;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-//        try {
-//            System.out.println("Wait a minute before start...");
-//            Thread.sleep(60000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//        System.out.println("... and go!");
-        System.out.println(new Date().getTime());
+        try {
+            System.out.println("Wait a minute before start...");
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("... and go!");
+
         long lastInfluxUpdate = 0;
+        EVTracker evTracker = new EVTracker();
         while (true) {
             try {
                 long start = System.currentTimeMillis();
                 Deye deye = makeDeye();
                 Solax solax = makeSolax();
                 SumInverter sum = new SumInverter(solax, deye);
-                int propertyValue = sum.getPropertyValue(5);
+                evTracker.checkEVStatus(deye);
 
                 // Export Openhab
                 OpenHabIO.pushToOpenhab(deye);
                 OpenHabIO.pushToOpenhab(solax);
                 OpenHabIO.pushToOpenhab(sum);
+                OpenHabIO.pushToOpenhab(evTracker);
 
                 // Export Influx
                 if (System.currentTimeMillis() - lastInfluxUpdate >= 60000) {

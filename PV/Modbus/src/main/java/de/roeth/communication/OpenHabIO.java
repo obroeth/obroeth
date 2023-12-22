@@ -17,6 +17,10 @@ public class OpenHabIO {
         }
     }
 
+    public static void pushToOpenhab(EVTracker evTracker) throws IOException {
+        curl("ev_station", evTracker.evStatus ? "ON" : "OFF");
+    }
+
     private static void curl(String name, String data) throws IOException {
         String url = "http://192.168.178.22:8080/rest/items/" + name;
         HttpURLConnection con = getHttpURLConnection(data, new URL(url));

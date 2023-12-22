@@ -24,7 +24,6 @@ public class Deye extends RealInverter {
             LogRegister.writeLogRegister(registers, sequence, "deye.out.json");
             return registers;
         } catch (Exception e) {
-            e.printStackTrace();
             modbusMaster.disconnect();
             return LogRegister.readLogRegister(sequence, "deye.out.json");
         }
