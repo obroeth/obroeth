@@ -1,16 +1,13 @@
 package de.roeth;
 
 
-import de.roeth.communication.EVTracker;
 import de.roeth.communication.InfluxIO;
 import de.roeth.communication.OpenHabIO;
 import de.roeth.modbus.ModbusCall;
 import de.roeth.modbus.ModbusCallSequence;
 import de.roeth.modbus.ModbusFileIO;
 import de.roeth.modbus.ModbusRegister;
-import de.roeth.model.Deye;
-import de.roeth.model.Solax;
-import de.roeth.model.SumInverter;
+import de.roeth.model.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,10 +27,12 @@ public class Main {
         EVTracker evTracker = new EVTracker();
         while (true) {
             try {
-                long start = System.currentTimeMillis();
                 Deye deye = makeDeye();
                 Solax solax = makeSolax();
                 SumInverter sum = new SumInverter(solax, deye);
+                SmartMeter sm = new SmartMeter(deye, solax);
+
+                sm.log();
                 evTracker.checkEVStatus(deye);
 
                 // Export Openhab
@@ -48,9 +47,9 @@ public class Main {
                     InfluxIO.pushToInflux(solax);
                     InfluxIO.pushToInflux(deye);
                     InfluxIO.pushToInflux(sum);
+                    InfluxIO.pushToInflux(evTracker);
+                    InfluxIO.pushToInflux(sm);
                 }
-//                long duration = (int) ((System.currentTimeMillis() - start) / 1000.);
-//                System.out.println(new Date() + ": Iteration SUCCESS after " + duration + "ms");
                 Thread.sleep(10000);
             } catch (Exception e) {
                 System.out.println(new Date() + ": Iteration FAILED:");

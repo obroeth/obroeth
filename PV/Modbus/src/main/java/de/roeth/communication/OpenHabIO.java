@@ -1,5 +1,6 @@
 package de.roeth.communication;
 
+import de.roeth.model.EVTracker;
 import de.roeth.model.Entity;
 import org.jetbrains.annotations.NotNull;
 

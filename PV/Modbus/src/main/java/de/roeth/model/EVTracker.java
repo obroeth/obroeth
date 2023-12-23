@@ -1,6 +1,4 @@
-package de.roeth.communication;
-
-import de.roeth.model.Deye;
+package de.roeth.model;
 
 import java.util.Date;
 
@@ -26,7 +24,6 @@ public class EVTracker {
                 evStatus = false;
             }
         }
-
     }
 
 }
