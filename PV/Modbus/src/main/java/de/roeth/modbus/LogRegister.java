@@ -34,7 +34,7 @@ public class LogRegister implements Register {
         for (int i = sequence.startRegister; i <= sequence.endRegister; i++) {
             jsonObject.put(String.valueOf(i), registers[i - sequence.startRegister].toShort());
         }
-        jsonObject.write(new FileWriter((file))).flush();
+        jsonObject.write(new FileWriter(file)).flush();
     }
 
     public static LogRegister[] readLogRegister(ModbusCallSequence sequence, String file) {

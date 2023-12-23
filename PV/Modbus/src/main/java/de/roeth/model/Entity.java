@@ -1,8 +1,7 @@
 package de.roeth.model;
 
-import com.ghgande.j2mod.modbus.procimg.InputRegister;
-import de.roeth.modbus.ModbusCallSequence;
-import de.roeth.modbus.ModbusEndpoint;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public abstract class Entity {
 
@@ -12,18 +11,10 @@ public abstract class Entity {
         this.name = name;
     }
 
-    public abstract int getPropertyLength();
+    public abstract ArrayList<EntityInfo> snapshotInfo();
 
-    public abstract String getPropertyName(int i);
+    public abstract ArrayList<String> influxWhitelist();
 
-    public abstract int getPropertyValue(int i);
-
-    public abstract double getPropertyScaledValue(int i);
-
-    public abstract String getPropertyPrettyValue(int i);
-
-    public abstract InputRegister[] readRegister(ModbusCallSequence sequence);
-
-    public abstract ModbusEndpoint getEndpoint();
+    public abstract void update() throws IOException;
 
 }

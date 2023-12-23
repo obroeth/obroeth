@@ -1,10 +1,12 @@
-package de.roeth.model;
+package de.roeth.model.devices;
 
-import com.ghgande.j2mod.modbus.procimg.InputRegister;
 import de.roeth.communication.Utils;
 import de.roeth.modbus.ModbusCall;
-import de.roeth.modbus.ModbusCallSequence;
-import de.roeth.modbus.ModbusEndpoint;
+import de.roeth.model.Entity;
+import de.roeth.model.EntityInfo;
+import de.roeth.model.Evaluator;
+import de.roeth.model.inverter.Deye;
+import de.roeth.model.inverter.Solax;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -16,7 +18,7 @@ import java.util.Date;
 public class SmartMeter extends Entity {
 
     private final Evaluator evaluator;
-    private final ArrayList<ModbusCall> calls = new ArrayList<>();
+    private final ArrayList<EntityInfo> infos = new ArrayList<>();
     private long endOfDay;
     private long now;
 
@@ -28,23 +30,25 @@ public class SmartMeter extends Entity {
         }
     }
 
-    public void clearCalls() {
-        calls.clear();
-    }
 
-    public void log() throws IOException {
+    @Override
+    public void update() throws IOException {
         now = new Date().getTime();
         logDay();
         save();
     }
 
+    public void clearInfo() {
+        infos.clear();
+    }
+
     private void logDay() {
         if (now >= endOfDay) {
-            calls.add(makeDailyOwnUsed());
-            calls.add(makeDailyBought());
-            calls.add(makeDailyConsumption());
-            calls.add(makeDailyProduction());
-            calls.add(makeDailySold());
+            infos.add(makeDailyOwnUsed());
+            infos.add(makeDailyBought());
+            infos.add(makeDailyConsumption());
+            infos.add(makeDailyProduction());
+            infos.add(makeDailySold());
             System.out.println("Logged daily stuff at " + new Date(now));
             endOfDay = Utils.getEndOfTomorrow().getTime();
             System.out.println("Next daily stuff will be logged at " + new Date(endOfDay));
@@ -68,116 +72,75 @@ public class SmartMeter extends Entity {
         jsonObject.write(new FileWriter((new File("smart_meter.json")))).flush();
     }
 
-    private ModbusCall makeDailyOwnUsed() {
+    private EntityInfo makeDailyOwnUsed() {
         ModbusCall fake = new ModbusCall();
         int daily_sold = evaluator.dailySold();
         int daily_prod = evaluator.totalDailyProduction();
         int own_used = daily_prod - daily_sold;
-        fake.name = name + "_daily_own_used";
+        fake.name = "daily_own_used";
         fake.addValue(own_used);
         fake.unit = "kWh";
         fake.scale = 0.1;
-        return fake;
+        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
     }
 
-    private ModbusCall makeDailyBought() {
+    private EntityInfo makeDailyBought() {
         ModbusCall fake = new ModbusCall();
         int daily_bought = evaluator.dailyBought();
-        fake.name = name + "_daily_bought";
+        fake.name = "daily_bought";
         fake.addValue(daily_bought);
         fake.unit = "kWh";
         fake.scale = 0.1;
-        return fake;
+        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
     }
 
-    private ModbusCall makeDailyConsumption() {
+    private EntityInfo makeDailyConsumption() {
         ModbusCall fake = new ModbusCall();
         int daily_sold = evaluator.dailySold();
         int daily_prod = evaluator.totalDailyProduction();
         int own_used = daily_prod - daily_sold;
         int daily_bought = evaluator.dailyBought();
-        fake.name = name + "_daily_used_consumption";
+        fake.name = "daily_used_consumption";
         fake.addValue(own_used + daily_bought);
         fake.unit = "kWh";
         fake.scale = 0.1;
-        return fake;
+        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
     }
 
-    private ModbusCall makeDailyProduction() {
+    private EntityInfo makeDailyProduction() {
         ModbusCall fake = new ModbusCall();
         int daily_prod = evaluator.totalDailyProduction();
-        fake.name = name + "_daily_production";
+        fake.name = "daily_production";
         fake.addValue(daily_prod);
         fake.unit = "kWh";
         fake.scale = 0.1;
-        return fake;
+        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
     }
 
-    private ModbusCall makeDailySold() {
+    private EntityInfo makeDailySold() {
         ModbusCall fake = new ModbusCall();
         int daily_prod = evaluator.dailySold();
-        fake.name = name + "_daily_sold";
+        fake.name = "daily_sold";
         fake.addValue(daily_prod);
         fake.unit = "kWh";
         fake.scale = 0.1;
-        return fake;
-    }
-
-    private ModbusCall makeFake(int i) {
-        ModbusCall fake = new ModbusCall();
-        // PV Power Total
-        switch (i) {
-            case 0:
-                int daily_sold = evaluator.dailySold();
-                int daily_prod = evaluator.totalDailyProduction();
-                int own_used = daily_prod - daily_sold;
-                fake.name = name + "_daily_own_used";
-                fake.addValue(own_used);
-                fake.unit = "kWh";
-                fake.scale = 0.1;
-                break;
-            case 1:
-                int daily_bought = evaluator.dailyBought();
-                fake.name = name + "_daily_bought";
-                fake.addValue(daily_bought);
-                fake.unit = "kWh";
-                fake.scale = 0.1;
-                break;
-        }
-        return fake;
-    }
-
-    public int getPropertyLength() {
-        return calls.size();
+        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
     }
 
     @Override
-    public String getPropertyName(int i) {
-        return calls.get(i).name;
+    public ArrayList<EntityInfo> snapshotInfo() {
+        return infos;
     }
 
     @Override
-    public int getPropertyValue(int i) {
-        return calls.get(i).value();
+    public ArrayList<String> influxWhitelist() {
+        ArrayList<String> whitelist = new ArrayList<>();
+        whitelist.add("daily_own_used");
+        whitelist.add("daily_bought");
+        whitelist.add("daily_used_consumption");
+        whitelist.add("daily_production");
+        whitelist.add("daily_sold");
+        return whitelist;
     }
 
-    @Override
-    public double getPropertyScaledValue(int i) {
-        return calls.get(i).scaledValue();
-    }
-
-    @Override
-    public String getPropertyPrettyValue(int i) {
-        return calls.get(i).pretty();
-    }
-
-    @Override
-    public InputRegister[] readRegister(ModbusCallSequence sequence) {
-        return new InputRegister[0];
-    }
-
-    @Override
-    public ModbusEndpoint getEndpoint() {
-        return null;
-    }
 }

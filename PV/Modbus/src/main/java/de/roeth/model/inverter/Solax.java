@@ -1,15 +1,16 @@
-package de.roeth.model;
+package de.roeth.model.inverter;
 
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
 import de.roeth.modbus.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Solax extends RealInverter {
 
-    public Solax(ArrayList<ModbusCall> modbusCalls, ModbusRegister register) {
-        super("solax", modbusCalls, register);
+    public Solax() {
+        super("solax");
     }
 
     @Override
@@ -29,8 +30,25 @@ public class Solax extends RealInverter {
     }
 
     @Override
+    public ArrayList<ModbusCall> loadModbusCallSpecification() throws IOException {
+        return ModbusFileIO.readSolaxModbusCalls();
+    }
+
+    @Override
+    public ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() throws IOException {
+        return ModbusFileIO.readSolaxModbusSequences();
+    }
+
+    @Override
     public ModbusEndpoint getEndpoint() {
-        return ModbusEndpoint.SOLAX;
+        return new ModbusEndpoint("/dev/ttyUSB1", 1, 9600, "none", 8, 1);
+    }
+
+    @Override
+    public ArrayList<String> influxWhitelist() {
+        ArrayList<String> whitelist = new ArrayList<>();
+        whitelist.add("daily_production");
+        return whitelist;
     }
 
 

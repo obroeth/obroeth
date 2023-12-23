@@ -1,5 +1,8 @@
 package de.roeth.model;
 
+import de.roeth.model.inverter.Deye;
+import de.roeth.model.inverter.Solax;
+
 public class Evaluator {
 
     private Solax solax;

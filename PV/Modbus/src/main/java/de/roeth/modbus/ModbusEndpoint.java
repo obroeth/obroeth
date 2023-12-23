@@ -3,9 +3,7 @@ package de.roeth.modbus;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 
 public class ModbusEndpoint {
-
-    public static ModbusEndpoint DEYE = new ModbusEndpoint("/dev/ttyUSB0", 1, 9600, "none", 8, 1);
-    public static ModbusEndpoint SOLAX = new ModbusEndpoint("/dev/ttyUSB1", 1, 9600, "none", 8, 1);
+    
     public String port;
     public int slave;
     public int baudrate;

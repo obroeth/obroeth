@@ -1,25 +1,41 @@
-package de.roeth.model;
+package de.roeth.model.inverter;
 
 import de.roeth.modbus.ModbusCall;
+import de.roeth.modbus.ModbusCallSequence;
+import de.roeth.modbus.ModbusEndpoint;
 import de.roeth.modbus.ModbusRegister;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class RealInverter extends Entity {
+public abstract class RealInverter extends Inverter {
 
     private final Map<String, ModbusCall> modbusCallByName = new HashMap<>();
-    public ArrayList<ModbusCall> modbusCalls;
-    public ModbusRegister register;
+    private ArrayList<ModbusCall> modbusCalls;
+    private ArrayList<ModbusCallSequence> modbusCallSequences;
+    private ModbusRegister register;
 
-    public RealInverter(String name, ArrayList<ModbusCall> modbusCalls, ModbusRegister register) {
+    public RealInverter(String name) {
         super(name);
-        this.modbusCalls = modbusCalls;
-        this.register = register;
     }
 
-    public void perform() {
+    public abstract ArrayList<ModbusCall> loadModbusCallSpecification() throws IOException;
+
+    public abstract ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() throws IOException;
+
+    public abstract ModbusEndpoint getEndpoint();
+
+    @Override
+    public void update() throws IOException {
+        modbusCalls = loadModbusCallSpecification();
+        modbusCallSequences = loadModbusCallSequenceSpecification();
+        modbusCallByName.clear();
+        register = new ModbusRegister();
+        for (ModbusCallSequence sequence : modbusCallSequences) {
+            register.fillRegister(sequence, readRegister(sequence));
+        }
         performOnCalls();
         createNameMap();
     }
@@ -46,7 +62,7 @@ public abstract class RealInverter extends Entity {
         ModbusCall fake = new ModbusCall();
         // PV Power Total
         if (i == modbusCalls.size()) {
-            fake.name = name + "_pv_power_total";
+            fake.name = "pv_power_total";
             fake.addValue(modbusCallByName("pv_power_1").value() + modbusCallByName("pv_power_2").value());
             fake.unit = "W";
             fake.scale = 1;
@@ -57,7 +73,7 @@ public abstract class RealInverter extends Entity {
     @Override
     public String getPropertyName(int i) {
         if (i < modbusCalls.size()) {
-            return name + "_" + modbusCalls.get(i).name;
+            return modbusCalls.get(i).name;
         }
         return makeFake(i).name;
     }
@@ -79,7 +95,7 @@ public abstract class RealInverter extends Entity {
     }
 
     @Override
-    public String getPropertyPrettyValue(int i) {
+    public String getPropertyPretty(int i) {
         if (i < modbusCalls.size()) {
             return modbusCalls.get(i).pretty();
         }
