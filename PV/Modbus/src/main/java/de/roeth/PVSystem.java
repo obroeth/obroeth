@@ -31,9 +31,5 @@ public class PVSystem {
         sm.update();
         evTracker.update();
     }
-
-    public void tearDown() {
-        sm.clearInfo();
-    }
-
+    
 }

@@ -5,7 +5,9 @@ import de.roeth.communication.InfluxIO;
 import de.roeth.communication.OpenHabIO;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -31,9 +33,13 @@ public class Main {
                 if (System.currentTimeMillis() - lastInfluxUpdate >= 60000) {
                     lastInfluxUpdate = System.currentTimeMillis();
                     InfluxIO.pushToInflux(pvSystem);
+                    pvSystem.sm.clearInfo();
                 }
 
-                pvSystem.tearDown();
+                Locale locale = new Locale("de", "DE");
+                DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, locale);
+                String date = dateFormat.format(new Date());
+                OpenHabIO.curl("pv_backend_status", date);
                 // Sleep
                 Thread.sleep(10000);
             } catch (Exception e) {

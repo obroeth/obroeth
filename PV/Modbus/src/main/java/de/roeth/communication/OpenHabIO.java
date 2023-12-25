@@ -29,11 +29,16 @@ public class OpenHabIO {
         }
     }
 
-//    public static void pushToOpenhab(EVTracker evTracker) throws IOException {
-//        curl("ev_station", evTracker.evStatus ? "ON" : "OFF");
-//    }
+    public static void curl(String device, String info) throws IOException {
+        String url = "http://192.168.178.22:8080/rest/items/" + device;
+        HttpURLConnection con = getHttpURLConnection(info, new URL(url));
+        int responseCode = con.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            System.out.println("POST Request failed. Tried to send name: " + device + " and data: " + info);
+        }
+    }
 
-    private static void curl(String prefix, EntityInfo info) throws IOException {
+    public static void curl(String prefix, EntityInfo info) throws IOException {
         String url = "http://192.168.178.22:8080/rest/items/" + prefix + "_" + info.name;
         HttpURLConnection con = getHttpURLConnection(info.pretty, new URL(url));
         int responseCode = con.getResponseCode();

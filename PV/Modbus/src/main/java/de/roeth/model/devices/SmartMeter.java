@@ -28,8 +28,8 @@ public class SmartMeter extends Entity {
         if (!load()) {
             endOfDay = Utils.getEndOfToday().getTime();
         }
+        System.out.println("Started smart meter! EOD is " + new Date(endOfDay));
     }
-
 
     @Override
     public void update() throws IOException {
@@ -69,7 +69,7 @@ public class SmartMeter extends Entity {
 
         jsonObject.put("endOfDay", endOfDay);
 
-        jsonObject.write(new FileWriter((new File("smart_meter.json")))).flush();
+        jsonObject.write(new FileWriter("smart_meter.json")).flush();
     }
 
     private EntityInfo makeDailyOwnUsed() {
