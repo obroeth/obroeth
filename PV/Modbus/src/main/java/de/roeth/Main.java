@@ -3,6 +3,7 @@ package de.roeth;
 
 import de.roeth.communication.InfluxIO;
 import de.roeth.communication.OpenHabIO;
+import de.roeth.utils.SystemUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -11,13 +12,15 @@ import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        try {
-            System.out.println("Wait a minute before start...");
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (!SystemUtils.VERBOSE) {
+            try {
+                System.out.println("Wait a minute before start...");
+                Thread.sleep(60000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("... and go!");
         }
-        System.out.println("... and go!");
 
         long lastInfluxUpdate = 0;
         PVSystem pvSystem = new PVSystem();
@@ -33,7 +36,7 @@ public class Main {
                 if (System.currentTimeMillis() - lastInfluxUpdate >= 60000) {
                     lastInfluxUpdate = System.currentTimeMillis();
                     InfluxIO.pushToInflux(pvSystem);
-                    pvSystem.sm.clearInfo();
+                    pvSystem.sm.clearProperties();
                 }
 
                 Locale locale = new Locale("de", "DE");

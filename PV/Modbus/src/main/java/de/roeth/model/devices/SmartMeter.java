@@ -1,30 +1,27 @@
 package de.roeth.model.devices;
 
 import de.roeth.communication.Utils;
-import de.roeth.modbus.ModbusCall;
-import de.roeth.model.Entity;
-import de.roeth.model.EntityInfo;
+import de.roeth.model.Device;
 import de.roeth.model.Evaluator;
-import de.roeth.model.inverter.Deye;
-import de.roeth.model.inverter.Solax;
+import de.roeth.model.input.DefaultDeviceProperty;
+import de.roeth.utils.FormatUtils;
+import de.roeth.utils.SystemUtils;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 
-public class SmartMeter extends Entity {
+public class SmartMeter extends Device {
 
     private final Evaluator evaluator;
-    private final ArrayList<EntityInfo> infos = new ArrayList<>();
     private long endOfDay;
     private long now;
 
-    public SmartMeter(Deye deye, Solax solax) throws IOException {
+    public SmartMeter(Evaluator evaluator) throws IOException {
         super("smartmeter");
-        this.evaluator = new Evaluator(solax, deye);
+        this.evaluator = evaluator;
         if (!load()) {
             endOfDay = Utils.getEndOfToday().getTime();
         }
@@ -33,22 +30,25 @@ public class SmartMeter extends Entity {
 
     @Override
     public void update() throws IOException {
+        SystemUtils.debug(this, "===> Start update of <" + name + ">.");
         now = new Date().getTime();
         logDay();
         save();
+        SystemUtils.debug(this, "<=== End update of <" + name + ">.");
     }
 
-    public void clearInfo() {
-        infos.clear();
+    @Override
+    public String getCacheFile() {
+        return "smartmeter_cache.json";
     }
 
     private void logDay() {
         if (now >= endOfDay) {
-            infos.add(makeDailyOwnUsed());
-            infos.add(makeDailyBought());
-            infos.add(makeDailyConsumption());
-            infos.add(makeDailyProduction());
-            infos.add(makeDailySold());
+            deviceProperties.add(makeDailyOwnUsage());
+            deviceProperties.add(makeDailyEnergyBought());
+            deviceProperties.add(makeDailyConsumption());
+            deviceProperties.add(makeDailyProduction());
+            deviceProperties.add(makeDailySold());
             System.out.println("Logged daily stuff at " + new Date(now));
             endOfDay = Utils.getEndOfTomorrow().getTime();
             System.out.println("Next daily stuff will be logged at " + new Date(endOfDay));
@@ -72,75 +72,58 @@ public class SmartMeter extends Entity {
         jsonObject.write(new FileWriter("smart_meter.json")).flush();
     }
 
-    private EntityInfo makeDailyOwnUsed() {
-        ModbusCall fake = new ModbusCall();
-        int daily_sold = evaluator.dailySold();
-        int daily_prod = evaluator.totalDailyProduction();
-        int own_used = daily_prod - daily_sold;
-        fake.name = "daily_own_used";
-        fake.addValue(own_used);
-        fake.unit = "kWh";
-        fake.scale = 0.1;
-        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
+    private DefaultDeviceProperty makeDailyOwnUsage() {
+        double dailyOwnUsed = evaluator.dailyOwnUsage();
+        return new DefaultDeviceProperty.Builder()
+                .name("daily_own_used")
+                .toOpenhab(false)
+                .textPayload(FormatUtils.ONE_DIGIT.format(dailyOwnUsed) + " kWh")
+                .toInflux(true)
+                .numericPayload(dailyOwnUsed)
+                .build();
     }
 
-    private EntityInfo makeDailyBought() {
-        ModbusCall fake = new ModbusCall();
-        int daily_bought = evaluator.dailyBought();
-        fake.name = "daily_bought";
-        fake.addValue(daily_bought);
-        fake.unit = "kWh";
-        fake.scale = 0.1;
-        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
+    private DefaultDeviceProperty makeDailyEnergyBought() {
+        double dailyEnergyBought = evaluator.dailyEnergyBought();
+        return new DefaultDeviceProperty.Builder()
+                .name("daily_bought")
+                .toOpenhab(false)
+                .textPayload(FormatUtils.ONE_DIGIT.format(dailyEnergyBought) + " kWh")
+                .toInflux(true)
+                .numericPayload(dailyEnergyBought)
+                .build();
     }
 
-    private EntityInfo makeDailyConsumption() {
-        ModbusCall fake = new ModbusCall();
-        int daily_sold = evaluator.dailySold();
-        int daily_prod = evaluator.totalDailyProduction();
-        int own_used = daily_prod - daily_sold;
-        int daily_bought = evaluator.dailyBought();
-        fake.name = "daily_used_consumption";
-        fake.addValue(own_used + daily_bought);
-        fake.unit = "kWh";
-        fake.scale = 0.1;
-        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
+    private DefaultDeviceProperty makeDailyConsumption() {
+        double dailyConsumption = evaluator.dailyConsumption();
+        return new DefaultDeviceProperty.Builder()
+                .name("daily_used_consumption")
+                .toOpenhab(false)
+                .textPayload(FormatUtils.ONE_DIGIT.format(dailyConsumption) + " kWh")
+                .toInflux(true)
+                .numericPayload(dailyConsumption)
+                .build();
     }
 
-    private EntityInfo makeDailyProduction() {
-        ModbusCall fake = new ModbusCall();
-        int daily_prod = evaluator.totalDailyProduction();
-        fake.name = "daily_production";
-        fake.addValue(daily_prod);
-        fake.unit = "kWh";
-        fake.scale = 0.1;
-        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
+    private DefaultDeviceProperty makeDailyProduction() {
+        double dailyProduction = evaluator.dailyProduction();
+        return new DefaultDeviceProperty.Builder()
+                .name("daily_production")
+                .toOpenhab(false)
+                .textPayload(FormatUtils.ONE_DIGIT.format(dailyProduction) + " kWh")
+                .toInflux(true)
+                .numericPayload(dailyProduction)
+                .build();
     }
 
-    private EntityInfo makeDailySold() {
-        ModbusCall fake = new ModbusCall();
-        int daily_prod = evaluator.dailySold();
-        fake.name = "daily_sold";
-        fake.addValue(daily_prod);
-        fake.unit = "kWh";
-        fake.scale = 0.1;
-        return new EntityInfo(fake.name, fake.scaledValue(), fake.pretty());
+    private DefaultDeviceProperty makeDailySold() {
+        double dailyEnergySold = evaluator.dailyEnergySold();
+        return new DefaultDeviceProperty.Builder()
+                .name("daily_sold")
+                .toOpenhab(false)
+                .textPayload(FormatUtils.ONE_DIGIT.format(dailyEnergySold) + " kWh")
+                .toInflux(true)
+                .numericPayload(dailyEnergySold)
+                .build();
     }
-
-    @Override
-    public ArrayList<EntityInfo> snapshotInfo() {
-        return infos;
-    }
-
-    @Override
-    public ArrayList<String> influxWhitelist() {
-        ArrayList<String> whitelist = new ArrayList<>();
-        whitelist.add("daily_own_used");
-        whitelist.add("daily_bought");
-        whitelist.add("daily_used_consumption");
-        whitelist.add("daily_production");
-        whitelist.add("daily_sold");
-        return whitelist;
-    }
-
 }

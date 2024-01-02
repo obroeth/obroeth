@@ -2,35 +2,36 @@ package de.roeth.model.inverter;
 
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
-import de.roeth.modbus.*;
+import de.roeth.modbus.ModbusCallSequence;
+import de.roeth.modbus.ModbusCallSpecification;
+import de.roeth.modbus.ModbusEndpoint;
+import de.roeth.modbus.ModbusFileIO;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Solax extends RealInverter {
+public class Solax extends Inverter {
 
     public Solax() {
         super("solax");
     }
 
     @Override
-    public InputRegister[] readRegister(ModbusCallSequence sequence) {
+    public InputRegister[] readRegister(ModbusCallSequence sequence) throws Exception {
         ModbusSerialMaster modbusMaster = new ModbusSerialMaster(getEndpoint().getParameter());
         try {
             modbusMaster.connect();
             InputRegister[] registers = modbusMaster.readInputRegisters(sequence.startRegister, sequence.length());
             modbusMaster.disconnect();
-
-            LogRegister.writeLogRegister(registers, sequence, "solax.out.json");
             return registers;
         } catch (Exception e) {
             modbusMaster.disconnect();
-            return LogRegister.readLogRegister(sequence, "solax.out.json");
+            throw e;
         }
     }
 
     @Override
-    public ArrayList<ModbusCall> loadModbusCallSpecification() throws IOException {
+    public ArrayList<ModbusCallSpecification> loadModbusCallSpecification() throws IOException {
         return ModbusFileIO.readSolaxModbusCalls();
     }
 
@@ -45,11 +46,14 @@ public class Solax extends RealInverter {
     }
 
     @Override
-    public ArrayList<String> influxWhitelist() {
-        ArrayList<String> whitelist = new ArrayList<>();
-        whitelist.add("daily_production");
-        return whitelist;
+    public String getCacheFile() {
+        return "solax_cache.json";
     }
 
-
+//    @Override
+//    public ArrayList<String> influxWhitelist() {
+//        ArrayList<String> whitelist = new ArrayList<>();
+//        whitelist.add("daily_production");
+//        return whitelist;
+//    }
 }

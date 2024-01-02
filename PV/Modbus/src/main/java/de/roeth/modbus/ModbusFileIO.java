@@ -16,7 +16,7 @@ public class ModbusFileIO {
         return readModbusSequences("deye_seq.json");
     }
 
-    public static ArrayList<ModbusCall> readDeyeModbusCalls() throws IOException {
+    public static ArrayList<ModbusCallSpecification> readDeyeModbusCalls() throws IOException {
         return readModbusCalls("deye.json");
     }
 
@@ -24,12 +24,12 @@ public class ModbusFileIO {
         return readModbusSequences("solax_seq.json");
     }
 
-    public static ArrayList<ModbusCall> readSolaxModbusCalls() throws IOException {
+    public static ArrayList<ModbusCallSpecification> readSolaxModbusCalls() throws IOException {
         return readModbusCalls("solax.json");
     }
 
-    private static ArrayList<ModbusCall> readModbusCalls(String file) throws IOException {
-        ArrayList<ModbusCall> modbusCalls = new ArrayList<>();
+    private static ArrayList<ModbusCallSpecification> readModbusCalls(String file) throws IOException {
+        ArrayList<ModbusCallSpecification> modbusCalls = new ArrayList<>();
 
         String string;
         try (InputStream stream = Main.class.getClassLoader().getResourceAsStream(file)) {
@@ -59,7 +59,15 @@ public class ModbusFileIO {
             if (call.has("resetCacheAtNewDay")) {
                 resetCacheAtNewDay = call.getBoolean("resetCacheAtNewDay");
             }
-            modbusCalls.add(new ModbusCall(name, registers, scale, unit, offset, cachable, resetCacheAtNewDay));
+            boolean toOpenhab = true;
+            if (call.has("toOpenhab")) {
+                toOpenhab = call.getBoolean("toOpenhab");
+            }
+            boolean toInflux = false;
+            if (call.has("toInflux")) {
+                toInflux = call.getBoolean("toInflux");
+            }
+            modbusCalls.add(new ModbusCallSpecification(name, unit, registers, scale, offset, cachable, resetCacheAtNewDay, toOpenhab, toInflux));
         }
 
         return modbusCalls;

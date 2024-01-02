@@ -1,13 +1,10 @@
 package de.roeth.communication;
 
 import de.roeth.PVSystem;
-import de.roeth.model.Entity;
-import de.roeth.model.EntityInfo;
-import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
+import de.roeth.model.Device;
+import de.roeth.model.input.DeviceProperty;
+import de.roeth.utils.SystemUtils;
 import org.influxdb.dto.Point;
-
-import java.util.ArrayList;
 
 public class InfluxIO {
 
@@ -47,33 +44,39 @@ public class InfluxIO {
 //    }
 
     public static void pushToInflux(PVSystem pvSystem) {
+        SystemUtils.debug(InfluxIO.class, "===> Starting sending data to InfluxDB.");
         pushToInflux(pvSystem.deye);
         pushToInflux(pvSystem.solax);
         pushToInflux(pvSystem.sum);
         pushToInflux(pvSystem.evTracker);
         pushToInflux(pvSystem.sm);
+        SystemUtils.debug(InfluxIO.class, "<=== Finished sending data to InfluxDB.");
     }
 
-    public static void pushToInflux(Entity entity) {
-        ArrayList<EntityInfo> infos = entity.snapshotInfo();
-        ArrayList<String> whitelist = entity.influxWhitelist();
-
-        Point.Builder dataPoint = Point.measurement("pv-" + entity.name);
-        for (EntityInfo info : infos) {
-            if (whitelist.contains(info.name) || whitelist.isEmpty()) {
-                dataPoint.addField(entity.name + "_" + info.name, info.value);
+    public static void pushToInflux(Device device) {
+        boolean send = false;
+        Point.Builder dataPoint = Point.measurement("pv-" + device.name);
+        SystemUtils.debug(InfluxIO.class, "===> Starting sending to database <pv-" + device.name + "> of InfluxDB.");
+        StringBuilder debugString = new StringBuilder();
+        for (DeviceProperty prop : device.getDeviceProperties()) {
+            if (prop.toInflux()) {
+                send = true;
+                dataPoint.addField(device.name + "_" + prop.name(), prop.numericPayload());
+                debugString.append("Field: ").append(device.name).append("_").append(prop.name()).append(" -> ").append(prop.numericPayload()).append(",");
             }
         }
-        if (!infos.isEmpty()) {
+        if (send) {
+            SystemUtils.debug(InfluxIO.class, "Send point: " + debugString);
             pushToInflux("pv_values", dataPoint.build());
         }
+        SystemUtils.debug(InfluxIO.class, "<=== Finished sending device <" + device.name + "> to InfluxDB.");
     }
 
     public static void pushToInflux(String database, Point point) {
-        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.22:8086");
-        influxDB.setDatabase(database);
-        influxDB.write(point);
-        influxDB.close();
+//        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.22:8086");
+//        influxDB.setDatabase(database);
+//        influxDB.write(point);
+//        influxDB.close();
     }
 
 }

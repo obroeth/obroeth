@@ -1,27 +1,31 @@
 package de.roeth;
 
+import de.roeth.model.Device;
+import de.roeth.model.Evaluator;
 import de.roeth.model.devices.EVTracker;
 import de.roeth.model.devices.SmartMeter;
+import de.roeth.model.devices.SumInverter;
 import de.roeth.model.inverter.Deye;
 import de.roeth.model.inverter.Solax;
-import de.roeth.model.inverter.SumInverter;
 
 import java.io.IOException;
 
 public class PVSystem {
 
-    public Deye deye;
-    public Solax solax;
-    public SumInverter sum;
-    public EVTracker evTracker;
-    public SmartMeter sm;
+    public Device deye;
+    public Device solax;
+    public Device sum;
+    public Device evTracker;
+    public Device sm;
+    public Evaluator evaluator;
 
     public PVSystem() throws IOException {
         deye = new Deye();
         solax = new Solax();
-        sum = new SumInverter(solax, deye);
-        evTracker = new EVTracker(deye);
-        sm = new SmartMeter(deye, solax);
+        evaluator = new Evaluator(solax, deye);
+        sum = new SumInverter(evaluator);
+        evTracker = new EVTracker(evaluator);
+        sm = new SmartMeter(evaluator);
     }
 
     public void update() throws IOException {
@@ -31,5 +35,5 @@ public class PVSystem {
         sm.update();
         evTracker.update();
     }
-    
+
 }

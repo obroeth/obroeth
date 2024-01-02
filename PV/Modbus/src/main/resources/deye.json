@@ -7,7 +7,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": true
+    "resetCacheAtNewDay": true,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "total_production",
@@ -18,7 +20,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_power_1",
@@ -26,7 +30,9 @@
       672
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_power_2",
@@ -34,7 +40,9 @@
       673
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_voltage_1",
@@ -42,7 +50,9 @@
       676
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_voltage_2",
@@ -50,7 +60,9 @@
       678
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_current_1",
@@ -58,7 +70,9 @@
       677
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_current_2",
@@ -66,7 +80,9 @@
       679
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "total_grid_power",
@@ -74,7 +90,9 @@
       625
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "grid_voltage_1",
@@ -82,7 +100,9 @@
       598
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_voltage_2",
@@ -90,7 +110,9 @@
       599
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_voltage_3",
@@ -98,7 +120,9 @@
       600
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "internal_ct_1_power",
@@ -106,7 +130,9 @@
       604
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "internal_ct_2_power",
@@ -114,7 +140,9 @@
       605
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "internal_ct_3_power",
@@ -122,7 +150,9 @@
       606
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "external_ct_1_power",
@@ -130,7 +160,9 @@
       616
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "external_ct_2_power",
@@ -138,7 +170,9 @@
       617
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "external_ct_3_power",
@@ -146,7 +180,9 @@
       618
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "daily_energy_bought",
@@ -156,7 +192,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": true
+    "resetCacheAtNewDay": true,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "total_energy_bought",
@@ -167,7 +205,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "daily_energy_sold",
@@ -177,7 +217,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": true
+    "resetCacheAtNewDay": true,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "total_energy_sold",
@@ -188,7 +230,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "total_load_power",
@@ -196,7 +240,9 @@
       653
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "load_power_1",
@@ -204,7 +250,9 @@
       650
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "load_power_2",
@@ -212,7 +260,9 @@
       651
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "load_power_3",
@@ -220,7 +270,9 @@
       652
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "load_voltage_1",
@@ -228,7 +280,9 @@
       644
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "load_voltage_2",
@@ -236,7 +290,9 @@
       645
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "load_voltage_3",
@@ -244,7 +300,9 @@
       646
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "daily_load_consumption",
@@ -252,7 +310,9 @@
       526
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "total_load_consumption",
@@ -261,7 +321,9 @@
       528
     ],
     "scale": 0.1,
-    "unit": "kWh"
+    "unit": "kWh",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "inverter_current_1",
@@ -269,7 +331,9 @@
       630
     ],
     "scale": 0.01,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "inverter_current_2",
@@ -277,7 +341,9 @@
       631
     ],
     "scale": 0.01,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "inverter_current_3",
@@ -285,7 +351,9 @@
       632
     ],
     "scale": 0.01,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "inverter_power_1",
@@ -293,7 +361,9 @@
       633
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "inverter_power_2",
@@ -301,7 +371,9 @@
       634
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "inverter_power_3",
@@ -309,7 +381,9 @@
       635
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "dc_temperature",
@@ -318,7 +392,9 @@
     ],
     "scale": 0.1,
     "unit": "°C",
-    "offset": -1000
+    "offset": -1000,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "ac_temperature",
@@ -327,7 +403,9 @@
     ],
     "scale": 0.1,
     "unit": "°C",
-    "offset": -1000
+    "offset": -1000,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "daily_battery_charge",
@@ -337,7 +415,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": true
+    "resetCacheAtNewDay": true,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "daily_battery_discharge",
@@ -347,7 +427,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": true
+    "resetCacheAtNewDay": true,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "total_battery_charge",
@@ -358,7 +440,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "total_battery_discharge",
@@ -369,7 +453,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "battery_power",
@@ -377,7 +463,9 @@
       590
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "battery_voltage",
@@ -385,7 +473,9 @@
       587
     ],
     "scale": 0.01,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "battery_soc",
@@ -395,7 +485,9 @@
     "scale": 1,
     "unit": "%",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "battery_current",
@@ -403,7 +495,9 @@
       591
     ],
     "scale": 0.01,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "battery_temperature",
@@ -411,6 +505,8 @@
       586
     ],
     "scale": 0.1,
-    "unit": "°C"
+    "unit": "°C",
+    "toOpenhab": true,
+    "toInflux": false
   }
 ]

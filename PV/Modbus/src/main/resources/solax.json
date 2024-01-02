@@ -7,7 +7,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": true
+    "resetCacheAtNewDay": true,
+    "toOpenhab": true,
+    "toInflux": true
   },
   {
     "name": "total_production",
@@ -17,7 +19,9 @@
     "scale": 0.1,
     "unit": "kWh",
     "cachable": true,
-    "resetCacheAtNewDay": false
+    "resetCacheAtNewDay": false,
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_power_1",
@@ -25,7 +29,9 @@
       1044
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_power_2",
@@ -33,7 +39,9 @@
       1045
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_voltage_1",
@@ -41,7 +49,9 @@
       1024
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_voltage_2",
@@ -49,7 +59,9 @@
       1025
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_current_1",
@@ -57,7 +69,9 @@
       1026
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "pv_current_2",
@@ -65,7 +79,9 @@
       1027
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "total_grid_power",
@@ -73,7 +89,9 @@
       1038
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_voltage_1",
@@ -81,7 +99,9 @@
       1028
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_voltage_2",
@@ -89,7 +109,9 @@
       1029
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_voltage_3",
@@ -97,7 +119,9 @@
       1030
     ],
     "scale": 0.1,
-    "unit": "V"
+    "unit": "V",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_current_1",
@@ -105,7 +129,9 @@
       1034
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_current_2",
@@ -113,7 +139,9 @@
       1035
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_current_3",
@@ -121,7 +149,9 @@
       1036
     ],
     "scale": 0.1,
-    "unit": "A"
+    "unit": "A",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "temperature",
@@ -129,7 +159,9 @@
       1037
     ],
     "scale": 1,
-    "unit": "°C"
+    "unit": "°C",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_power_1",
@@ -137,7 +169,9 @@
       1040
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_power_2",
@@ -145,7 +179,9 @@
       1041
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   },
   {
     "name": "grid_power_3",
@@ -153,6 +189,8 @@
       1042
     ],
     "scale": 1,
-    "unit": "W"
+    "unit": "W",
+    "toOpenhab": true,
+    "toInflux": false
   }
 ]
