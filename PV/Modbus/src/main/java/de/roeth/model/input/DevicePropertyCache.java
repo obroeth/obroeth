@@ -13,7 +13,7 @@ public class DevicePropertyCache {
     public static List<DeviceProperty> read(String file) {
         ArrayList<DeviceProperty> properties = new ArrayList<>();
 
-        JSONArray root = JsonIOUtils.read(file);
+        JSONArray root = JsonIOUtils.readJsonArray(file);
         for (int i = 0; i < root.length(); i++) {
             JSONObject entry = root.getJSONObject(i);
             DefaultDeviceProperty prop = new DefaultDeviceProperty.Builder()
@@ -39,7 +39,7 @@ public class DevicePropertyCache {
         for (DeviceProperty property : properties) {
             json.put(property.toJson());
         }
-        JsonIOUtils.write(file, json);
+        JsonIOUtils.writeJsonArray(file, json);
     }
 
 }

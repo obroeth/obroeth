@@ -1,41 +1,32 @@
 package de.roeth.modbus;
 
-import de.roeth.Main;
+import de.roeth.utils.JsonIOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ModbusFileIO {
 
-    public static ArrayList<ModbusCallSequence> readDeyeModbusSequences() throws IOException {
+    public static ArrayList<ModbusCallSequence> readDeyeModbusSequences() {
         return readModbusSequences("deye_seq.json");
     }
 
-    public static ArrayList<ModbusCallSpecification> readDeyeModbusCalls() throws IOException {
+    public static ArrayList<ModbusCallSpecification> readDeyeModbusCalls() {
         return readModbusCalls("deye.json");
     }
 
-    public static ArrayList<ModbusCallSequence> readSolaxModbusSequences() throws IOException {
+    public static ArrayList<ModbusCallSequence> readSolaxModbusSequences() {
         return readModbusSequences("solax_seq.json");
     }
 
-    public static ArrayList<ModbusCallSpecification> readSolaxModbusCalls() throws IOException {
+    public static ArrayList<ModbusCallSpecification> readSolaxModbusCalls() {
         return readModbusCalls("solax.json");
     }
 
-    private static ArrayList<ModbusCallSpecification> readModbusCalls(String file) throws IOException {
+    private static ArrayList<ModbusCallSpecification> readModbusCalls(String file) {
         ArrayList<ModbusCallSpecification> modbusCalls = new ArrayList<>();
-
-        String string;
-        try (InputStream stream = Main.class.getClassLoader().getResourceAsStream(file)) {
-            string = new String(Objects.requireNonNull(stream).readAllBytes(), StandardCharsets.UTF_8);
-        }
-        JSONArray root = new JSONArray(string);
+        JSONArray root = JsonIOUtils.readJsonArrayResource(file);
 
         for (int i = 0; i < root.length(); i++) {
             JSONObject call = root.getJSONObject(i);
@@ -73,14 +64,9 @@ public class ModbusFileIO {
         return modbusCalls;
     }
 
-    private static ArrayList<ModbusCallSequence> readModbusSequences(String file) throws IOException {
+    private static ArrayList<ModbusCallSequence> readModbusSequences(String file) {
         ArrayList<ModbusCallSequence> sequences = new ArrayList<>();
-
-        String string;
-        try (InputStream stream = Main.class.getClassLoader().getResourceAsStream(file)) {
-            string = new String(Objects.requireNonNull(stream).readAllBytes(), StandardCharsets.UTF_8);
-        }
-        JSONArray root = new JSONArray(string);
+        JSONArray root = JsonIOUtils.readJsonArrayResource(file);
 
         for (int i = 0; i < root.length(); i++) {
             JSONObject call = root.getJSONObject(i);

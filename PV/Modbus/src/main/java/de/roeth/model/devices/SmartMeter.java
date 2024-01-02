@@ -1,15 +1,15 @@
 package de.roeth.model.devices;
 
-import de.roeth.communication.Utils;
 import de.roeth.model.Device;
 import de.roeth.model.Evaluator;
 import de.roeth.model.input.DefaultDeviceProperty;
 import de.roeth.utils.FormatUtils;
+import de.roeth.utils.JsonIOUtils;
 import de.roeth.utils.SystemUtils;
+import de.roeth.utils.TimeUtils;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
@@ -23,7 +23,9 @@ public class SmartMeter extends Device {
         super("smartmeter");
         this.evaluator = evaluator;
         if (!load()) {
-            endOfDay = Utils.getEndOfToday().getTime();
+            endOfDay = TimeUtils.getEndOfToday().getTime();
+        } else {
+            SystemUtils.debug(this, "Successfully loaded smart meter cache.");
         }
         System.out.println("Started smart meter! EOD is " + new Date(endOfDay));
     }
@@ -50,14 +52,14 @@ public class SmartMeter extends Device {
             deviceProperties.add(makeDailyProduction());
             deviceProperties.add(makeDailySold());
             System.out.println("Logged daily stuff at " + new Date(now));
-            endOfDay = Utils.getEndOfTomorrow().getTime();
+            endOfDay = TimeUtils.getEndOfTomorrow().getTime();
             System.out.println("Next daily stuff will be logged at " + new Date(endOfDay));
         }
     }
 
     private boolean load() throws IOException {
-        if (new File("smart_meter.json").exists()) {
-            JSONObject jsonObject = Utils.createJsonObject("smart_meter.json");
+        if (new File(getCacheFile()).exists()) {
+            JSONObject jsonObject = JsonIOUtils.readJsonObject(getCacheFile());
             endOfDay = jsonObject.getLong("endOfDay");
             return true;
         }
@@ -66,10 +68,8 @@ public class SmartMeter extends Device {
 
     private void save() throws IOException {
         JSONObject jsonObject = new JSONObject();
-
         jsonObject.put("endOfDay", endOfDay);
-
-        jsonObject.write(new FileWriter("smart_meter.json")).flush();
+        JsonIOUtils.writeJsonObject(getCacheFile(), jsonObject);
     }
 
     private DefaultDeviceProperty makeDailyOwnUsage() {

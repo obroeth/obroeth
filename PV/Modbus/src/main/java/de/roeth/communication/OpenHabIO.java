@@ -19,7 +19,7 @@ public class OpenHabIO {
         pushToOpenhab(pvSystem.solax);
         pushToOpenhab(pvSystem.sum);
         pushToOpenhab(pvSystem.evTracker);
-//        pushToOpenhab(pvSystem.sm);
+        pushToOpenhab(pvSystem.sm);
         SystemUtils.debug(OpenHabIO.class, "<=== Finished sending data to Openhab.");
     }
 

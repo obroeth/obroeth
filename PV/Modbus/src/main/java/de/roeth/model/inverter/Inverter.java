@@ -21,12 +21,12 @@ public abstract class Inverter extends Device {
         super(name);
     }
 
-    protected abstract List<ModbusCallSpecification> loadModbusCallSpecification() throws IOException;
+    protected abstract List<ModbusCallSpecification> loadModbusCallSpecification();
 
-    protected abstract ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() throws IOException;
+    protected abstract ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification();
 
     public abstract ModbusEndpoint getEndpoint();
-    
+
 
     @Override
     public void update() throws IOException {
@@ -58,7 +58,7 @@ public abstract class Inverter extends Device {
         }
     }
 
-    private void performOnCalls() throws IOException {
+    private void performOnCalls() {
         deviceProperties.clear();
         List<ModbusCallSpecification> modbusCallSpecifications = loadModbusCallSpecification();
         for (ModbusCallSpecification spec : modbusCallSpecifications) {
@@ -70,66 +70,6 @@ public abstract class Inverter extends Device {
         }
         SystemUtils.debug(this, "Turned register of <" + name + "> into <" + deviceProperties.size() + "> properties.");
     }
-
-
-//    private void createNameMap() {
-//        for (ModbusCall call : modbusCalls) {
-//            modbusCallByName.put(call.name, call);
-//        }
-//    }
-//
-//    public ModbusCall modbusCallByName(String name) {
-//        return modbusCallByName.get(name);
-//    }
-//
-//    private ModbusCall makeFake(int i) {
-//        ModbusCall fake = new ModbusCall();
-//        // PV Power Total
-//        if (i == modbusCalls.size()) {
-//            fake.name = "pv_power_total";
-//            fake.addValue(modbusCallByName("pv_power_1").value() + modbusCallByName("pv_power_2").value());
-//            fake.unit = "W";
-//            fake.scale = 1;
-//        }
-//        return fake;
-//    }
-//
-//    @Override
-//    public String getPropertyName(int i) {
-//        if (i < modbusCalls.size()) {
-//            return modbusCalls.get(i).name;
-//        }
-//        return makeFake(i).name;
-//    }
-//
-//    @Override
-//    public int getPropertyValue(int i) {
-//        if (i < modbusCalls.size()) {
-//            return modbusCalls.get(i).value();
-//        }
-//        return makeFake(i).value();
-//    }
-//
-//    @Override
-//    public double getPropertyScaledValue(int i) {
-//        if (i < modbusCalls.size()) {
-//            return modbusCalls.get(i).scaledValue();
-//        }
-//        return makeFake(i).scaledValue();
-//    }
-//
-//    @Override
-//    public String getPropertyPretty(int i) {
-//        if (i < modbusCalls.size()) {
-//            return modbusCalls.get(i).pretty();
-//        }
-//        return makeFake(i).pretty();
-//    }
-//
-//    @Override
-//    public int getPropertyLength() {
-//        return modbusCalls.size() + 1;
-//    }
 
     public abstract InputRegister[] readRegister(ModbusCallSequence sequence) throws Exception;
 }

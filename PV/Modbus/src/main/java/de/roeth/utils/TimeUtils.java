@@ -1,23 +1,10 @@
-package de.roeth.communication;
+package de.roeth.utils;
 
-import org.json.JSONObject;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class Utils {
-
-    public static JSONObject createJsonObject(String file) throws IOException {
-        try (InputStream stream = new FileInputStream(file)) {
-            String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-            return new JSONObject(json);
-        }
-    }
+public class TimeUtils {
 
     public static Date getTodayMidnight() {
         GregorianCalendar today = new GregorianCalendar();

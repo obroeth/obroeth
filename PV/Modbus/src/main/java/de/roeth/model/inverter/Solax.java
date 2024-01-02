@@ -7,7 +7,6 @@ import de.roeth.modbus.ModbusCallSpecification;
 import de.roeth.modbus.ModbusEndpoint;
 import de.roeth.modbus.ModbusFileIO;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Solax extends Inverter {
@@ -31,12 +30,12 @@ public class Solax extends Inverter {
     }
 
     @Override
-    public ArrayList<ModbusCallSpecification> loadModbusCallSpecification() throws IOException {
+    public ArrayList<ModbusCallSpecification> loadModbusCallSpecification() {
         return ModbusFileIO.readSolaxModbusCalls();
     }
 
     @Override
-    public ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() throws IOException {
+    public ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() {
         return ModbusFileIO.readSolaxModbusSequences();
     }
 
@@ -49,11 +48,4 @@ public class Solax extends Inverter {
     public String getCacheFile() {
         return "solax_cache.json";
     }
-
-//    @Override
-//    public ArrayList<String> influxWhitelist() {
-//        ArrayList<String> whitelist = new ArrayList<>();
-//        whitelist.add("daily_production");
-//        return whitelist;
-//    }
 }

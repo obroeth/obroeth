@@ -8,7 +8,6 @@ import de.roeth.modbus.ModbusCallSpecification;
 import de.roeth.modbus.ModbusEndpoint;
 import de.roeth.modbus.ModbusFileIO;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +32,12 @@ public class Deye extends Inverter {
     }
 
     @Override
-    public List<ModbusCallSpecification> loadModbusCallSpecification() throws IOException {
+    public List<ModbusCallSpecification> loadModbusCallSpecification() {
         return ModbusFileIO.readDeyeModbusCalls();
     }
 
     @Override
-    public ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() throws IOException {
+    public ArrayList<ModbusCallSequence> loadModbusCallSequenceSpecification() {
         return ModbusFileIO.readDeyeModbusSequences();
     }
 
@@ -51,17 +50,4 @@ public class Deye extends Inverter {
     public String getCacheFile() {
         return "deye_cache.json";
     }
-
-//    @Override
-//    public ArrayList<String> influxWhitelist() {
-//        ArrayList<String> whitelist = new ArrayList<>();
-//        whitelist.add("total_grid_power");
-//        whitelist.add("battery_soc");
-//        whitelist.add("daily_production");
-//        whitelist.add("daily_energy_bought");
-//        whitelist.add("total_energy_bought");
-//        whitelist.add("daily_energy_sold");
-//        whitelist.add("total_energy_sold");
-//        return whitelist;
-//    }
 }
