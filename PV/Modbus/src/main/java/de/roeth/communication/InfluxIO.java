@@ -4,6 +4,8 @@ import de.roeth.PVSystem;
 import de.roeth.model.Device;
 import de.roeth.model.input.DeviceProperty;
 import de.roeth.utils.SystemUtils;
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 
 public class InfluxIO {
@@ -38,10 +40,10 @@ public class InfluxIO {
     }
 
     public static void pushToInflux(String database, Point point) {
-//        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.22:8086");
-//        influxDB.setDatabase(database);
-//        influxDB.write(point);
-//        influxDB.close();
+        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.22:8086");
+        influxDB.setDatabase(database);
+        influxDB.write(point);
+        influxDB.close();
     }
 
 }

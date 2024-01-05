@@ -25,7 +25,10 @@ public class SumInverter extends Device {
         deviceProperties.add(makeLoadPower());
         deviceProperties.add(makeDailyProduction());
         deviceProperties.add(makeTotalProduction());
+        deviceProperties.add(makeCurrentBatterySoCinWatt());
+        deviceProperties.add(makeDailyOwnUsagePercentage());
         deviceProperties.add(makeDailyOwnUsage());
+        deviceProperties.add(makeTotalOwnUsagePercentage());
         deviceProperties.add(makeTotalOwnUsage());
         deviceProperties.add(makeDailyAutarchy());
         deviceProperties.add(makeTotalAutarchy());
@@ -59,7 +62,18 @@ public class SumInverter extends Device {
                 .build();
     }
 
-    private DefaultDeviceProperty makeTotalOwnUsage() {
+    private DefaultDeviceProperty makeCurrentBatterySoCinWatt() {
+        double battery = evaluator.batterySoCinWatt();
+        return new DefaultDeviceProperty.Builder()
+                .name("battery_soc_watt")
+                .toOpenhab(true)
+                .textPayload(FormatUtils.ONE_DIGIT.format(battery) + " kWh")
+                .toInflux(true)
+                .numericPayload(battery)
+                .build();
+    }
+
+    private DefaultDeviceProperty makeTotalOwnUsagePercentage() {
         double totalOwnUsagePercentage = evaluator.totalOwnUsagePercentage();
         return new DefaultDeviceProperty.Builder()
                 .name("total_own_usage")
@@ -70,7 +84,7 @@ public class SumInverter extends Device {
                 .build();
     }
 
-    private DefaultDeviceProperty makeDailyOwnUsage() {
+    private DefaultDeviceProperty makeDailyOwnUsagePercentage() {
         double dailyOwnUsagePercentage = evaluator.dailyOwnUsagePercentage();
         return new DefaultDeviceProperty.Builder()
                 .name("daily_own_usage")
@@ -78,6 +92,28 @@ public class SumInverter extends Device {
                 .textPayload(FormatUtils.ZERO_DIGIT.format(dailyOwnUsagePercentage * 100) + " %")
                 .toInflux(true)
                 .numericPayload(dailyOwnUsagePercentage * 100)
+                .build();
+    }
+
+    private DefaultDeviceProperty makeTotalOwnUsage() {
+        double totalOwnUsage = evaluator.totalOwnUsage();
+        return new DefaultDeviceProperty.Builder()
+                .name("total_own_usage_consumption")
+                .toOpenhab(true)
+                .textPayload(FormatUtils.ONE_DIGIT.format(totalOwnUsage) + " kWh")
+                .toInflux(true)
+                .numericPayload(totalOwnUsage)
+                .build();
+    }
+
+    private DefaultDeviceProperty makeDailyOwnUsage() {
+        double dailyOwnUsage = evaluator.dailyOwnUsage();
+        return new DefaultDeviceProperty.Builder()
+                .name("daily_own_usage_consumption")
+                .toOpenhab(true)
+                .textPayload(FormatUtils.ONE_DIGIT.format(dailyOwnUsage) + " kWh")
+                .toInflux(true)
+                .numericPayload(dailyOwnUsage)
                 .build();
     }
 

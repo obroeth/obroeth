@@ -405,7 +405,7 @@
     "unit": "°C",
     "offset": -1000,
     "toOpenhab": true,
-    "toInflux": false
+    "toInflux": true
   },
   {
     "name": "daily_battery_charge",
@@ -465,7 +465,7 @@
     "scale": 1,
     "unit": "W",
     "toOpenhab": true,
-    "toInflux": false
+    "toInflux": true
   },
   {
     "name": "battery_voltage",

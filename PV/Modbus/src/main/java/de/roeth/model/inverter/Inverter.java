@@ -5,7 +5,9 @@ import de.roeth.modbus.ModbusCallSequence;
 import de.roeth.modbus.ModbusCallSpecification;
 import de.roeth.modbus.ModbusEndpoint;
 import de.roeth.model.Device;
+import de.roeth.model.input.DefaultDeviceProperty;
 import de.roeth.model.input.ModbusCall;
+import de.roeth.utils.FormatUtils;
 import de.roeth.utils.SystemUtils;
 
 import java.io.IOException;
@@ -38,6 +40,7 @@ public abstract class Inverter extends Device {
         } else {
             loadFromCache(getCacheFile());
         }
+        deviceProperties.add(makePvPowerSum());
         SystemUtils.debug(this, "<=== End update of <" + name + ">.");
     }
 
@@ -69,6 +72,17 @@ public abstract class Inverter extends Device {
             deviceProperties.add(call);
         }
         SystemUtils.debug(this, "Turned register of <" + name + "> into <" + deviceProperties.size() + "> properties.");
+    }
+
+    private DefaultDeviceProperty makePvPowerSum() {
+        double sumPvPower = getProperty("pv_power_1").numericPayload() + getProperty("pv_power_2").numericPayload();
+        return new DefaultDeviceProperty.Builder()
+                .name("pv_power_total")
+                .toOpenhab(true)
+                .textPayload(FormatUtils.ONE_DIGIT.format(sumPvPower) + " W")
+                .toInflux(false)
+                .numericPayload(sumPvPower)
+                .build();
     }
 
     public abstract InputRegister[] readRegister(ModbusCallSequence sequence) throws Exception;

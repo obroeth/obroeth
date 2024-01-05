@@ -24,12 +24,24 @@ public class Evaluator {
         return deye_pv_power + solax_pv_power;
     }
 
+    public double batteryPower() {
+        return deye.getProperty("battery_power").numericPayload();
+    }
+
+    public double batterySoCinWatt() {
+        return batterySoC() * 14. / 100.;
+    }
+
+    public double batterySoC() {
+        return deye.getProperty("battery_soc").numericPayload();
+    }
+
     public double totalGridPower() {
         return deye.getProperty("total_grid_power").numericPayload();
     }
 
     public double loadPower() {
-        return pvPower() + totalGridPower();
+        return pvPower() + totalGridPower() + batteryPower();
     }
 
     public double dailyProduction() {
@@ -44,12 +56,28 @@ public class Evaluator {
         return deye_total_prod + solax_total_prod;
     }
 
+    public double dailyBatteryCharge() {
+        return deye.getProperty("daily_battery_charge").numericPayload();
+    }
+
+    public double dailyBatteryDischarge() {
+        return deye.getProperty("daily_battery_discharge").numericPayload();
+    }
+
+    public double totalBatteryCharge() {
+        return deye.getProperty("total_battery_charge").numericPayload();
+    }
+
+    public double totalBatteryDischarge() {
+        return deye.getProperty("total_battery_discharge").numericPayload();
+    }
+
     public double dailyConsumption() {
-        return dailyOwnUsage() + dailyEnergyBought();
+        return dailyOwnUsage() + dailyEnergyBought() + dailyBatteryDischarge();
     }
 
     public double totalConsumption() {
-        return totalOwnUsage() + totalEnergyBought();
+        return totalOwnUsage() + totalEnergyBought() + totalBatteryDischarge();
     }
 
     public double dailyOwnUsage() {
@@ -86,11 +114,16 @@ public class Evaluator {
     }
 
     public double totalAutarchy() {
-        double total_used = totalOwnUsage() + totalEnergyBought();
+        // Tag des Speicherstart am 03.01.2024:
+        double totalOwnUsageOffset = 90.6;
+        double totalEnergyBoughtOffset = 319.5;
+        double ownUsage = totalOwnUsage() - totalOwnUsageOffset;
+        double totalBought = totalEnergyBought() - totalEnergyBoughtOffset;
+        double total_used = ownUsage + totalBought;
         if (total_used <= 0.) {
-            return 0.;
+            return 1.;
         }
-        double autarchy = totalOwnUsage() / total_used;
+        double autarchy = ownUsage / total_used;
         return Math.min(autarchy, 1.);
     }
 

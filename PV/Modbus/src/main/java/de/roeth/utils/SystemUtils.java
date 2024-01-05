@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 
 public class SystemUtils {
 
-    public static boolean VERBOSE = true;
+    public static boolean VERBOSE = false;
 
     public static void debug(Object clazz, String msg) {
         if (VERBOSE)

@@ -161,7 +161,7 @@
     "scale": 1,
     "unit": "°C",
     "toOpenhab": true,
-    "toInflux": false
+    "toInflux": true
   },
   {
     "name": "grid_power_1",
