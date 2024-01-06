@@ -8,6 +8,9 @@ import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class InfluxIO {
 
     public static void pushToInflux(PVSystem pvSystem) {
@@ -25,11 +28,13 @@ public class InfluxIO {
         Point.Builder dataPoint = Point.measurement("pv-" + device.name);
         SystemUtils.debug(InfluxIO.class, "===> Starting sending to measurement <pv-" + device.name + "> of InfluxDB.");
         StringBuilder debugString = new StringBuilder();
+        InfluxLogbook.startNewLog();
         for (DeviceProperty prop : device.getDeviceProperties()) {
             if (prop.toInflux()) {
                 send = true;
                 dataPoint.addField(device.name + "_" + prop.name(), prop.numericPayload());
                 debugString.append("Field: ").append(device.name).append("_").append(prop.name()).append(" -> ").append(prop.numericPayload()).append(",");
+                InfluxLogbook.log(device, prop);
             }
         }
         if (send) {
@@ -37,6 +42,25 @@ public class InfluxIO {
             pushToInflux("pv_values", dataPoint.build());
         }
         SystemUtils.debug(InfluxIO.class, "<=== Finished sending device <" + device.name + "> to InfluxDB.");
+    }
+
+    public static void recover(String device, List<DeviceProperty> props, long timestamp) {
+        boolean send = false;
+        Point.Builder dataPoint = Point.measurement("pv-" + device).time(timestamp, TimeUnit.MILLISECONDS);
+        SystemUtils.debug(InfluxIO.class, "===> Starting recovering measurement <pv-" + device + "> of InfluxDB.");
+        StringBuilder debugString = new StringBuilder();
+        for (DeviceProperty prop : props) {
+            if (prop.toInflux()) {
+                send = true;
+                dataPoint.addField(device + "_" + prop.name(), prop.numericPayload());
+                debugString.append("Field: ").append(device).append("_").append(prop.name()).append(" -> ").append(prop.numericPayload()).append(",");
+            }
+        }
+        if (send) {
+            SystemUtils.debug(InfluxIO.class, "Send point: " + debugString);
+//            pushToInflux("pv_values", dataPoint.build());
+        }
+        SystemUtils.debug(InfluxIO.class, "<=== Finished recovering device <" + device + "> to InfluxDB.");
     }
 
     public static void pushToInflux(String database, Point point) {

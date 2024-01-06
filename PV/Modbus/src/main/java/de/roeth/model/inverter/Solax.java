@@ -2,6 +2,7 @@ package de.roeth.model.inverter;
 
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
+import de.roeth.communication.OpenHabIO;
 import de.roeth.modbus.ModbusCallSequence;
 import de.roeth.modbus.ModbusCallSpecification;
 import de.roeth.modbus.ModbusEndpoint;
@@ -23,9 +24,11 @@ public class Solax extends Inverter {
             modbusMaster.connect();
             InputRegister[] registers = modbusMaster.readInputRegisters(sequence.startRegister, sequence.length());
             modbusMaster.disconnect();
+            OpenHabIO.curl("pv_backend_status_solax", "Online");
             return registers;
         } catch (Exception e) {
             modbusMaster.disconnect();
+            OpenHabIO.curl("pv_backend_status_solax", "Offline");
             throw e;
         }
     }

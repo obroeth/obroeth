@@ -15,6 +15,19 @@ public class DefaultDeviceProperty extends DeviceProperty {
     public double numericPayload = 0;
     public double defaultNumericPayload = 0;
 
+    public static DefaultDeviceProperty fromCsv(String[] csv) {
+        return new DefaultDeviceProperty.Builder()
+                .name(csv[0])
+                .toOpenhab(Boolean.parseBoolean(csv[1]))
+                .textPayload(csv[2])
+                .defaultTextPayload(csv[3])
+                .toInflux(Boolean.parseBoolean(csv[4]))
+                .numericPayload(Double.parseDouble(csv[5]))
+                .defaultNumericPayload(Double.parseDouble(csv[6]))
+                .cacheTime(Long.parseLong(csv[7]))
+                .resetAtNewDay(Boolean.parseBoolean(csv[8]))
+                .build();
+    }
 
     public String name() {
         return name;
