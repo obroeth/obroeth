@@ -12,6 +12,11 @@ import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) throws IOException {
+        if (args.length > 0) {
+            SystemUtils.VERBOSE = Integer.parseInt(args[0]) == 1;
+        } else {
+            SystemUtils.VERBOSE = false;
+        }
         if (!SystemUtils.VERBOSE) {
             try {
                 System.out.println("Wait a minute before start...");

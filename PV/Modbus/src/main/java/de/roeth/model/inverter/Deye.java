@@ -21,6 +21,7 @@ public class Deye extends Inverter {
     public InputRegister[] readRegister(ModbusCallSequence sequence) throws Exception {
         ModbusSerialMaster modbusMaster = new ModbusSerialMaster(getEndpoint().getParameter());
         try {
+            modbusMaster.setTimeout(1000);
             modbusMaster.connect();
             Register[] registers = modbusMaster.readMultipleRegisters(getEndpoint().slave, sequence.startRegister, sequence.length());
             modbusMaster.disconnect();

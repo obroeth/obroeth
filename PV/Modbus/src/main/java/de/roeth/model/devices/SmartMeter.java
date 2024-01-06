@@ -27,13 +27,14 @@ public class SmartMeter extends Device {
         } else {
             SystemUtils.debug(this, "Successfully loaded smart meter cache.");
         }
-        System.out.println("Started smart meter! EOD is " + new Date(endOfDay));
+        System.out.println("Started smart meter at " + new Date() + "! EOD is " + new Date(endOfDay));
     }
 
     @Override
     public void update() throws IOException {
         SystemUtils.debug(this, "===> Start update of <" + name + ">.");
         now = new Date().getTime();
+        SystemUtils.debug(this, "Now is: " + new Date(now) + ", EOD is: " + new Date(endOfDay));
         logDay();
         save();
         SystemUtils.debug(this, "<=== End update of <" + name + ">.");
@@ -46,7 +47,7 @@ public class SmartMeter extends Device {
 
     private void logDay() {
         if (now >= endOfDay) {
-            deviceProperties.add(makeDailyOwnUsage());
+            deviceProperties.add(makeDailyOwnUsageWithBattery());
             deviceProperties.add(makeDailyEnergyBought());
             deviceProperties.add(makeDailyConsumption());
             deviceProperties.add(makeDailyProduction());
@@ -55,6 +56,11 @@ public class SmartMeter extends Device {
             endOfDay = TimeUtils.getEndOfTomorrow().getTime();
             System.out.println("Next daily stuff will be logged at " + new Date(endOfDay));
         }
+        SystemUtils.debug(this, "Daily own usage: " + evaluator.dailyOwnUsage());
+        SystemUtils.debug(this, "Daily energy bought: " + evaluator.dailyEnergyBought());
+        SystemUtils.debug(this, "Daily consumption: " + evaluator.dailyConsumption());
+        SystemUtils.debug(this, "Daily production: " + evaluator.dailyProduction());
+        SystemUtils.debug(this, "Daily sold: " + evaluator.dailyEnergySold());
     }
 
     private boolean load() throws IOException {
@@ -72,8 +78,8 @@ public class SmartMeter extends Device {
         JsonIOUtils.writeJsonObject(getCacheFile(), jsonObject);
     }
 
-    private DefaultDeviceProperty makeDailyOwnUsage() {
-        double dailyOwnUsed = evaluator.dailyOwnUsage();
+    private DefaultDeviceProperty makeDailyOwnUsageWithBattery() {
+        double dailyOwnUsed = evaluator.dailyOwnUsage() + evaluator.dailyBatteryDischarge();
         return new DefaultDeviceProperty.Builder()
                 .name("daily_own_used")
                 .toOpenhab(false)

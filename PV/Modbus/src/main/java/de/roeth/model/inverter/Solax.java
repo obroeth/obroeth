@@ -19,6 +19,7 @@ public class Solax extends Inverter {
     public InputRegister[] readRegister(ModbusCallSequence sequence) throws Exception {
         ModbusSerialMaster modbusMaster = new ModbusSerialMaster(getEndpoint().getParameter());
         try {
+            modbusMaster.setTimeout(1000);
             modbusMaster.connect();
             InputRegister[] registers = modbusMaster.readInputRegisters(sequence.startRegister, sequence.length());
             modbusMaster.disconnect();
