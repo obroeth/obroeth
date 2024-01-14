@@ -39,7 +39,8 @@ public class InfluxIO {
         }
         if (send) {
             SystemUtils.debug(InfluxIO.class, "Send point: " + debugString);
-            pushToInflux("pv_values", dataPoint.build());
+            pushToInfluxOH("pv_values", dataPoint.build());
+            pushToInfluxHA("pv_values", dataPoint.build());
         }
         SystemUtils.debug(InfluxIO.class, "<=== Finished sending device <" + device.name + "> to InfluxDB.");
     }
@@ -58,13 +59,21 @@ public class InfluxIO {
         }
         if (send) {
             SystemUtils.debug(InfluxIO.class, "Send point: " + debugString);
-//            pushToInflux("pv_values", dataPoint.build());
+            pushToInfluxOH("pv_values", dataPoint.build());
+            pushToInfluxHA("pv_values", dataPoint.build());
         }
         SystemUtils.debug(InfluxIO.class, "<=== Finished recovering device <" + device + "> to InfluxDB.");
     }
 
-    public static void pushToInflux(String database, Point point) {
+    public static void pushToInfluxOH(String database, Point point) {
         InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.22:8086");
+        influxDB.setDatabase(database);
+        influxDB.write(point);
+        influxDB.close();
+    }
+
+    public static void pushToInfluxHA(String database, Point point) {
+        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.127:8086", "influx", "haFidio12per!");
         influxDB.setDatabase(database);
         influxDB.write(point);
         influxDB.close();

@@ -14,7 +14,7 @@ import java.util.Map;
 public abstract class Device {
 
     public final String name;
-    private final Map<String, DeviceProperty> propertyByName;
+    protected final Map<String, DeviceProperty> propertyByName;
     protected List<DeviceProperty> deviceProperties;
 
     public Device(String name) {

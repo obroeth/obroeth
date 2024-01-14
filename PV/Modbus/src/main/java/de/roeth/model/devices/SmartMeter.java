@@ -66,8 +66,12 @@ public class SmartMeter extends Device {
     private boolean load() throws IOException {
         if (new File(getCacheFile()).exists()) {
             JSONObject jsonObject = JsonIOUtils.readJsonObject(getCacheFile());
-            endOfDay = jsonObject.getLong("endOfDay");
-            return true;
+            if (jsonObject.has("endOfDay")) {
+                endOfDay = jsonObject.getLong("endOfDay");
+                return true;
+            } else {
+                return false;
+            }
         }
         return false;
     }

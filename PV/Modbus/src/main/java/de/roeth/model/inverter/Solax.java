@@ -7,6 +7,8 @@ import de.roeth.modbus.ModbusCallSequence;
 import de.roeth.modbus.ModbusCallSpecification;
 import de.roeth.modbus.ModbusEndpoint;
 import de.roeth.modbus.ModbusFileIO;
+import de.roeth.model.input.DefaultDeviceProperty;
+import de.roeth.utils.FormatUtils;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,36 @@ public class Solax extends Inverter {
             OpenHabIO.curl("pv_backend_status_solax", "Offline");
             throw e;
         }
+    }
+
+    @Override
+    public void loadFromCache(String cacheFile) {
+        super.loadFromCache(cacheFile);
+        deviceProperties.remove(propertyByName.get("pv_power_1"));
+        deviceProperties.remove(propertyByName.get("pv_power_2"));
+        deviceProperties.remove(propertyByName.get("pv_power_total"));
+
+        DefaultDeviceProperty pvPower1 = new DefaultDeviceProperty.Builder()
+                .name("pv_power_1")
+                .toOpenhab(true)
+                .textPayload(FormatUtils.ONE_DIGIT.format(0) + " W")
+                .toInflux(false)
+                .numericPayload(0)
+                .build();
+        DefaultDeviceProperty pvPower2 = new DefaultDeviceProperty.Builder()
+                .name("pv_power_2")
+                .toOpenhab(true)
+                .textPayload(FormatUtils.ONE_DIGIT.format(0) + " W")
+                .toInflux(false)
+                .numericPayload(0)
+                .build();
+        deviceProperties.add(pvPower1);
+        propertyByName.put("pv_power_1", pvPower1);
+        deviceProperties.add(pvPower2);
+        propertyByName.put("pv_power_2", pvPower2);
+        DefaultDeviceProperty pvSum = makePvPowerSum();
+        deviceProperties.add(pvSum);
+        propertyByName.put("pv_power_total", pvSum);
     }
 
     @Override

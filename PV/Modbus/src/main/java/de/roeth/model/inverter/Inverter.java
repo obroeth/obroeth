@@ -37,10 +37,10 @@ public abstract class Inverter extends Device {
             performOnCalls();
             updateMapByName();
             saveToCache(getCacheFile());
+            deviceProperties.add(makePvPowerSum());
         } else {
             loadFromCache(getCacheFile());
         }
-        deviceProperties.add(makePvPowerSum());
         SystemUtils.debug(this, "<=== End update of <" + name + ">.");
     }
 
@@ -74,7 +74,7 @@ public abstract class Inverter extends Device {
         SystemUtils.debug(this, "Turned register of <" + name + "> into <" + deviceProperties.size() + "> properties.");
     }
 
-    private DefaultDeviceProperty makePvPowerSum() {
+    protected DefaultDeviceProperty makePvPowerSum() {
         double sumPvPower = getProperty("pv_power_1").numericPayload() + getProperty("pv_power_2").numericPayload();
         return new DefaultDeviceProperty.Builder()
                 .name("pv_power_total")

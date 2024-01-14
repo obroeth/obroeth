@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,16 +50,19 @@ public class InfluxLogbook {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = currentDate.format(dateFormatter);
-        File dir = new File("influxlog/" + formattedDate + "/");
-        dir.mkdirs();
+
         File file = new File("influxlog/" + formattedDate + "/" + device.name + ".csv");
         if (!file.exists()) {
-            file.createNewFile();
+            Path path = FileSystems.getDefault().getPath(file.getParent());
+            Files.createDirectories(path);
+
+            // Erzeuge die Datei
+            Files.createFile(path.resolve(file.getName()));
         }
         return file;
     }
 
-    public static void recoverFromLog() throws IOException, CsvValidationException {
+    public static void recoverFromLog(long start, long end) throws IOException, CsvValidationException {
         File dir = new File("influxlog/");
         if (dir.exists() && dir.isDirectory()) {
             for (File subdir : dir.listFiles()) {
@@ -73,15 +79,19 @@ public class InfluxLogbook {
                             if (lastTimestamp == 0 || lastTimestamp == Long.parseLong(csv[csv.length - 1])) {
                                 props.add(DefaultDeviceProperty.fromCsv(csv));
                             } else {
-                                InfluxIO.recover(device.getName().replace(".csv", ""), props, lastTimestamp);
-                                measurementCounter++;
+                                if (lastTimestamp >= start && lastTimestamp <= end) {
+                                    InfluxIO.recover(device.getName().replace(".csv", ""), props, lastTimestamp);
+                                    measurementCounter++;
+                                }
                                 props.clear();
                                 props.add(DefaultDeviceProperty.fromCsv(csv));
                             }
                             lastTimestamp = Long.parseLong(csv[csv.length - 1]);
                         }
-                        InfluxIO.recover(device.getName().replace(".csv", ""), props, lastTimestamp);
-                        measurementCounter++;
+                        if (lastTimestamp != 0 && lastTimestamp >= start && lastTimestamp <= end) {
+                            InfluxIO.recover(device.getName().replace(".csv", ""), props, lastTimestamp);
+                            measurementCounter++;
+                        }
                         System.out.println("<====== Finished to recover device: " + device.getName().replace(".csv", "") + " with <" + measurementCounter + "> measurements.");
                     }
                 }
@@ -90,7 +100,10 @@ public class InfluxLogbook {
     }
 
     public static void main(String[] args) throws CsvValidationException, IOException {
-        recoverFromLog();
+        long start = 0;
+        long end = 1704996904000L;
+
+        recoverFromLog(start, end);
     }
 
 }
