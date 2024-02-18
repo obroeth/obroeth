@@ -19,13 +19,13 @@ public class Evaluator {
     }
 
     public double pvPower() {
-        double deye_pv_power = deye.getProperty("pv_power_1").numericPayload() + deye.getProperty("pv_power_2").numericPayload();
-        double solax_pv_power = solax.getProperty("pv_power_1").numericPayload() + solax.getProperty("pv_power_2").numericPayload();
+        double deye_pv_power = deye.getNumericPropertyOrZero("pv_power_1") + deye.getNumericPropertyOrZero("pv_power_2");
+        double solax_pv_power = solax.getNumericPropertyOrZero("pv_power_1") + solax.getNumericPropertyOrZero("pv_power_2");
         return deye_pv_power + solax_pv_power;
     }
 
     public double batteryPower() {
-        return deye.getProperty("battery_power").numericPayload();
+        return deye.getNumericPropertyOrZero("battery_power");
     }
 
     public double batterySoCinWatt() {
@@ -33,11 +33,11 @@ public class Evaluator {
     }
 
     public double batterySoC() {
-        return deye.getProperty("battery_soc").numericPayload();
+        return deye.getNumericPropertyOrZero("battery_soc");
     }
 
     public double totalGridPower() {
-        return deye.getProperty("total_grid_power").numericPayload();
+        return deye.getNumericPropertyOrZero("total_grid_power");
     }
 
     public double loadPower() {
@@ -45,31 +45,31 @@ public class Evaluator {
     }
 
     public double dailyProduction() {
-        double deye_daily_prod = deye.getProperty("daily_production").numericPayload();
-        double solax_daily_prod = solax.getProperty("daily_production").numericPayload();
+        double deye_daily_prod = deye.getNumericPropertyOrZero("daily_production");
+        double solax_daily_prod = solax.getNumericPropertyOrZero("daily_production");
         return solax_daily_prod + deye_daily_prod;
     }
 
     public double totalProduction() {
-        double deye_total_prod = deye.getProperty("total_production").numericPayload();
-        double solax_total_prod = solax.getProperty("total_production").numericPayload();
+        double deye_total_prod = deye.getNumericPropertyOrZero("total_production");
+        double solax_total_prod = solax.getNumericPropertyOrZero("total_production");
         return deye_total_prod + solax_total_prod;
     }
 
     public double dailyBatteryCharge() {
-        return deye.getProperty("daily_battery_charge").numericPayload();
+        return deye.getNumericPropertyOrZero("daily_battery_charge");
     }
 
     public double dailyBatteryDischarge() {
-        return deye.getProperty("daily_battery_discharge").numericPayload();
+        return deye.getNumericPropertyOrZero("daily_battery_discharge");
     }
 
     public double totalBatteryCharge() {
-        return deye.getProperty("total_battery_charge").numericPayload();
+        return deye.getNumericPropertyOrZero("total_battery_charge");
     }
 
     public double totalBatteryDischarge() {
-        return deye.getProperty("total_battery_discharge").numericPayload();
+        return deye.getNumericPropertyOrZero("total_battery_discharge");
     }
 
     public double dailyConsumption() {
@@ -128,19 +128,19 @@ public class Evaluator {
     }
 
     public double dailyEnergySold() {
-        return deye.getProperty("daily_energy_sold").numericPayload();
+        return deye.getNumericPropertyOrZero("daily_energy_sold");
     }
 
     public double totalEnergySold() {
-        return deye.getProperty("total_energy_sold").numericPayload();
+        return deye.getNumericPropertyOrZero("total_energy_sold");
     }
 
     public double dailyEnergyBought() {
-        return deye.getProperty("daily_energy_bought").numericPayload();
+        return deye.getNumericPropertyOrZero("daily_energy_bought");
     }
 
     public double totalEnergyBought() {
-        return deye.getProperty("total_energy_bought").numericPayload();
+        return deye.getNumericPropertyOrZero("total_energy_bought");
     }
 
 }

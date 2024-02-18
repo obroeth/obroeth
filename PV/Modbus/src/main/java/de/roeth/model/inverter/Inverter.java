@@ -75,7 +75,7 @@ public abstract class Inverter extends Device {
     }
 
     protected DefaultDeviceProperty makePvPowerSum() {
-        double sumPvPower = getProperty("pv_power_1").numericPayload() + getProperty("pv_power_2").numericPayload();
+        double sumPvPower = getNumericPropertyOrZero("pv_power_1") + getNumericPropertyOrZero("pv_power_2");
         return new DefaultDeviceProperty.Builder()
                 .name("pv_power_total")
                 .toOpenhab(true)

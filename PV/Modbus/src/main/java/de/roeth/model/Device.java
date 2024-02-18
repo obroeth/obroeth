@@ -37,6 +37,10 @@ public abstract class Device {
         return propertyByName.get(key);
     }
 
+    public double getNumericPropertyOrZero(String property) {
+        return hasProperty(property) ? getProperty(property).numericPayload() : 0.;
+    }
+
     public List<DeviceProperty> getDeviceProperties() {
         return deviceProperties;
     }

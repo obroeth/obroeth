@@ -17,6 +17,7 @@ public class SmartMeter extends Device {
 
     private final Evaluator evaluator;
     private long endOfDay;
+    private long endOfMonth;
     private long now;
 
     public SmartMeter(Evaluator evaluator) throws IOException {

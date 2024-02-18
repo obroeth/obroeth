@@ -417,7 +417,7 @@
     "cachable": true,
     "resetCacheAtNewDay": true,
     "toOpenhab": true,
-    "toInflux": false
+    "toInflux": true
   },
   {
     "name": "daily_battery_discharge",
@@ -429,7 +429,7 @@
     "cachable": true,
     "resetCacheAtNewDay": true,
     "toOpenhab": true,
-    "toInflux": false
+    "toInflux": true
   },
   {
     "name": "total_battery_charge",

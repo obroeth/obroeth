@@ -53,11 +53,11 @@ public class Main {
 
     private static void writeToDatabase(double temp) {
         // InfluxDB-Verbindung herstellen
-        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.22:8086");
+        InfluxDB influxDB = InfluxDBFactory.connect("http://192.168.178.127:8086", "influx", "haFidio12per!");
 
         // Daten in InfluxDB speichern (Beispiel, anpassen an Ihre Struktur)
-        influxDB.setDatabase("temperature");
-        Point dataPoint = Point.measurement("pv-room").addField("temp", temp).build();
+        influxDB.setDatabase("pv_values");
+        Point dataPoint = Point.measurement("pv-room").addField("temperature", temp).build();
         influxDB.write(dataPoint);
 
         // Verbindung schließen

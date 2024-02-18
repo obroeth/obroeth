@@ -3,6 +3,7 @@ package de.roeth.model.inverter;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
 import com.ghgande.j2mod.modbus.procimg.Register;
+import de.roeth.communication.HomeAutomationIO;
 import de.roeth.communication.OpenHabIO;
 import de.roeth.modbus.ModbusCallSequence;
 import de.roeth.modbus.ModbusCallSpecification;
@@ -27,10 +28,12 @@ public class Deye extends Inverter {
             Register[] registers = modbusMaster.readMultipleRegisters(getEndpoint().slave, sequence.startRegister, sequence.length());
             modbusMaster.disconnect();
             OpenHabIO.curl("pv_backend_status_deye", "Online");
+            HomeAutomationIO.sendSingle("deye_status", "Online", "backend_deye");
             return registers;
         } catch (Exception e) {
             modbusMaster.disconnect();
             OpenHabIO.curl("pv_backend_status_deye", "Offline");
+            HomeAutomationIO.sendSingle("deye_status", "Offline", "backend_deye");
             throw e;
         }
     }

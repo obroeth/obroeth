@@ -57,8 +57,8 @@ public class EVTracker extends Device {
     private void checkAndCorrectTotalConsumption() throws IOException {
         loadFromCache(getCacheFile());
         if (hasProperty("plug_today_consumption") && hasProperty("plug_total_consumption")) {
-            double cachedTotalConsumption = getProperty("plug_total_consumption").numericPayload();
-            double cachedDailyConsumption = getProperty("plug_today_consumption").numericPayload();
+            double cachedTotalConsumption = getNumericPropertyOrZero("plug_total_consumption");
+            double cachedDailyConsumption = getNumericPropertyOrZero("plug_today_consumption");
             long cacheTimeDaily = getProperty("plug_today_consumption").cacheTime();
             boolean isCached = getProperty("plug_today_consumption").isCached();
             boolean resetAtNewDay = getProperty("plug_today_consumption").resetAtNewDay();
@@ -176,13 +176,20 @@ public class EVTracker extends Device {
         }
         Date now = new Date();
         double currentPower = evaluator.totalGridPower();
-        if (currentPower > 0) {
+        double batteryPower = evaluator.batteryPower();
+        if (currentPower > 100 || batteryPower > 100) {
             lastTimeNotSufficientPower = now.getTime();
+            if (evStatus) {
+                System.out.println("Turned EV station off at " + new Date());
+            }
             evStatus = false;
             return;
         }
         if (currentPower < powerThreshold) {
             evStatus = lastTimeNotSufficientPower + necessaryTimeOverThreshold <= now.getTime();
+            if (evStatus) {
+                System.out.println("Turned EV station on at " + new Date());
+            }
         }
     }
 

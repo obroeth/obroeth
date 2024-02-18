@@ -39,7 +39,7 @@ public class InfluxIO {
         }
         if (send) {
             SystemUtils.debug(InfluxIO.class, "Send point: " + debugString);
-            pushToInfluxOH("pv_values", dataPoint.build());
+//            pushToInfluxOH("pv_values", dataPoint.build());
             pushToInfluxHA("pv_values", dataPoint.build());
         }
         SystemUtils.debug(InfluxIO.class, "<=== Finished sending device <" + device.name + "> to InfluxDB.");
